@@ -1,4 +1,4 @@
-function make(tag, text = "", classes = []) {
+export function make(tag, text = "", classes = []) {
   const element = document.createElement(tag);
   if (text) {
     element.textContent = text; // Usar textContent para texto plano
@@ -9,6 +9,6 @@ function make(tag, text = "", classes = []) {
   return element;
 }
 
-function insertar(padre, hijo) {
+export function insertar(padre, hijo) {
   padre.appendChild(hijo);
 }
