@@ -19,3 +19,9 @@ export function makeCanvas(
   }
   return canvas;
 }
+
+export function makeGrid(width = 5, height = 10) {
+  return Array(height)
+    .fill()
+    .map(() => Array(width).fill(0));
+}
