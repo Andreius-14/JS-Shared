@@ -9,11 +9,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Contr
 import { worldColor } from "../JS-Shared/Shared-Const.js";
 //------------------------------------------------------------------------------//
 
-// PROPIEDADES
-export const background = (color = worldColor.grey) => {
-  scene.background = new THREE.Color(color);
-};
-
 //------------------------------------------------------------------------------//
 
 // CONSUMO [animate()]

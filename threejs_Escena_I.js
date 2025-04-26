@@ -1,6 +1,10 @@
 // Librerias
 import * as THREE from "three";
 import { make, insertar, enlaceId } from "./Shared-DOM.js";
+
+//----------------------------------------------------------------//
+//                         VARIABLES
+//----------------------------------------------------------------//
 const w = globalThis.innerWidth;
 const h = globalThis.innerHeight;
 const pxLogico = globalThis.devicePixelRatio;
@@ -23,9 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
   box3D.appendChild(renderer.domElement);
 });
 
-// camera.updateProjectionMatrix();
-// renderer.setClearColor("#111")
-
+//----------------------------------------------------------------//
+//                   FUNCIONES - PUBLICAS
+//----------------------------------------------------------------//
 function MakeContenedorThreejs(
   idContenedor = "",
   insertarEnBody = true,

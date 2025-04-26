@@ -1,139 +1,116 @@
 import * as THREE from "three";
 import { scene } from "./threejs_Escena_I.js";
 
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-// // const material = new THREE.MeshBasicMaterial( { color: 0x44aa88 } ); //!Sombra
-// // const material = new THREE.MeshStandardMaterial( { color: 0x44aa88 } ); //Sombra
-// const material = new THREE.MeshNormalMaterial(); //Drogas
-
-// export const cube = new THREE.Mesh(geometry, material);
-
-// OBJETOS - VARIABLES
-export const text = {
-  color: () => new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
-  Sombra: () => new THREE.MeshStandardMaterial(),
-  Drogas: () => new THREE.MeshNormalMaterial(),
-  recibeSombra: () => new THREE.ShadowMaterial(),
-  imagen: () => new THREE.TextureLoader(),
-  // Agrega Mas
-};
-
-// export const geo = {
-//     Esfera: new THREE.SphereGeometry(0.7, 32, 16),
-//     Capsula: new THREE.CapsuleGeometry(1,1,4,30),
-//     Cilindro: new THREE.CylinderGeometry(0.5, 0.5, 2, 32),
-//     cubo: new THREE.BoxGeometry(1, 1, 1),
-//     toru: new THREE.TorusGeometry( 2, 0.5, 16, 50 ),
-//     plano: new THREE.PlaneGeometry(),
-//     // Agrega Mas [Completo]
-// };
-
 export const geo = {
+  Cubo: (ancho = 1, alto = 1, profundidad = 1) => {
+    return new THREE.BoxGeometry(ancho, alto, profundidad);
+  },
   Esfera: (radio = 0.7, segmentos = 32, anillos = 16) => {
     return new THREE.SphereGeometry(radio, segmentos, anillos);
   },
   Capsula: (radio = 1, alto = 1, segmentos = 4, anillos = 30) => {
     return new THREE.CapsuleGeometry(radio, alto, segmentos, anillos);
   },
-  Cilindro: (
-    radioSuperior = 0.5,
-    radioInferior = 0.5,
-    altura = 2,
-    segmentos = 32,
-  ) => {
-    return new THREE.CylinderGeometry(
-      radioSuperior,
-      radioInferior,
-      altura,
-      segmentos,
-    );
+  Cilindro: (radioTop = 0.5, radioBottom = 0.5, altura = 2, segmentos = 32) => {
+    return new THREE.CylinderGeometry(radioTop, radioBottom, altura, segmentos);
   },
-  cubo: (ancho = 1, alto = 1, profundidad = 1) => {
-    return new THREE.BoxGeometry(ancho, alto, profundidad);
+  Torus: (radio = 2, tubo = 0.5, segRadiales = 16, segTubulares = 50) => {
+    return new THREE.TorusGeometry(radio, tubo, segRadiales, segTubulares);
   },
-  torus: (
-    radio = 2,
-    tubo = 0.5,
-    segmentosRadiales = 16,
-    segmentosTubulares = 50,
-  ) => {
-    return new THREE.TorusGeometry(
-      radio,
-      tubo,
-      segmentosRadiales,
-      segmentosTubulares,
-    );
-  },
-  plano: (ancho = 1, alto = 1) => {
+  Plano: (ancho = 1, alto = 1) => {
     return new THREE.PlaneGeometry(ancho, alto);
   },
   // Agrega más geometrías personalizadas según sea necesario
 };
 
-// console.log(geo.Esfera);
+// OBJETOS - VARIABLES
+export const materiales = {
+  color: () => new THREE.MeshBasicMaterial(),
+  Sombra: () => new THREE.MeshStandardMaterial(),
+  Drogas: () => new THREE.MeshNormalMaterial(),
+  recibeImagen: () => new THREE.MeshStandardMaterial(),
+  recibeSombra: () => new THREE.ShadowMaterial(),
+  // Agrega Mas
+};
+
+export const carga = {
+  textura: () => new THREE.TextureLoader(), // Carga texturas (.jpg, .png)
+  cuboTextura: () => new THREE.CubeTextureLoader(), // Carga texturas de entorno (cubemaps)
+  modelo: () => new THREE.GLTFLoader(), // Carga modelos 3D (.gltf, .glb)
+  fuente: () => new THREE.FontLoader(), // Carga fuentes para texto 3D
+};
+
+//----------------------------------------------------------------//
+//                   FUNCIONES - PRIVADAS
+//----------------------------------------------------------------//
+export function textureLoad(ruta) {
+  return carga.textura().load(ruta);
+}
+//----------------------------------------------------------------//
+//                   FUNCIONES - HERENCIA
 //----------------------------------------------------------------//
 
-// TEMA - GEOMETRIA
-export const geometria3D = (
-  geometria = geo.Esfera(),
-  textura = text.Drogas(),
-  posicion = [0, 0, 0],
-  color = 0x00ff00,
-  escena = scene,
-) => {
-  // console.log(geometria);
-  let materialGeo = textura;
-  // if (materialGeo!= text.Drogas()){
-  materialGeo.color = new THREE.Color(color);
-  // }
-
-  const objeto = new THREE.Mesh(geometria, materialGeo);
-  objeto.position.set(...posicion);
-  escena.add(objeto);
-
-  return objeto;
+//--> Imagen asignada a Textura
+//--> Textura asignada a Material
+export const AddImageMap = (objeto3D, ruta, textura) => {
+  const tex = ruta ? textureLoad(ruta) : textura;
+  tex.colorSpace = THREE.SRGBColorSpace; // Corrección gamma esencial
+  //Material
+  objeto3D.material.map = tex;
+  objeto3D.material.needsUpdate = true;
 };
 
-// TEMA - TEXTURAS
+export const AddImageNormalMap = (objeto3D, ruta, intensidadV2 = [1, 1]) => {
+  const tex = textureLoad(ruta);
+  tex.colorSpace = THREE.LinearSRGBColorSpace;
+  //Material
+  objeto3D.material.normalMap = tex;
+  objeto3D.material.normalScale.set(...intensidadV2);
+};
+export const AddImageAO = (objeto3D, ruta, intensidad = 1.5) => {
+  const tex = textureLoad(ruta);
+  tex.colorSpace = THREE.LinearSRGBColorSpace;
+  //Material
+  objeto3D.material.aoMap = tex;
+  objeto3D.material.aoMapIntensity = Math.min(intensidad, 2);
+};
 
-function loadImage(ruta) {
-  return text.imagen().load(ruta);
+export const AddImageAlphaMap = (objeto3D, ruta) => {
+  const tex = textureLoad(ruta);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  //Material
+  objeto3D.material.alphaMap = tex;
+  objeto3D.material.transparent = true;
+  objeto3D.material.side = THREE.DoubleSide; // Para ver ambos lados
+  objeto3D.material.depthWrite = false; // Mejora renderizado transparente
+};
+
+//----------------------------------------------------------------//
+//                   FUNCIONES - PUBLICAS
+//----------------------------------------------------------------//
+
+export function geometria3D({
+  geometria = geo.Esfera(),
+  material = materiales.Drogas(),
+  posicion = [0, 0, 0],
+  rotacion = [0, 0, 0],
+  escala = [1, 1, 1],
+  nombre = "",
+  color = null,
+  insertarToScene = true,
+} = {}) {
+  if (color) material.color = new THREE.Color(color);
+
+  // Crear el objeto 3D
+  const objeto3D = new THREE.Mesh(geometria, material);
+
+  // Configurar propiedades del objeto
+  objeto3D.position.set(...posicion);
+  objeto3D.rotation.set(...rotacion);
+  objeto3D.scale.set(...escala);
+
+  if (nombre) objeto3D.name = nombre;
+  if (insertarToScene) scene.add(objeto3D);
+
+  return objeto3D;
 }
-
-export const geo3DImage = (
-  geometria = geo.Esfera(),
-  ruta = "",
-  posicion = [0, 0, 0],
-  escena = scene,
-) => {
-  let material = text.Sombra();
-  if (ruta !== "") {
-    material.map = loadImage(ruta);
-  }
-  //
-  // console.log(material.map);
-
-  let _3D = new THREE.Mesh(geometria, material);
-  _3D.position.set(...posicion);
-
-  escena.add(_3D);
-  return _3D;
-};
-
-export const AddImageNormal = (objeto, ruta = "", intensidadV2 = [20, 20]) => {
-  // [Superficie Rugosa]
-  objeto.material.normalMap = loadImage(ruta);
-  objeto.material.normalScale = new THREE.Vector2(...intensidadV2);
-  // console.log(objeto.material.normalMap);
-};
-export const AddImageAO = (objeto, ruta, intensidad = 0.5) => {
-  // [sombra] - [Intensidad: 0 - 1]
-  objeto.material.aoMap = loadImage(ruta);
-  objeto.material.aoMapIntensity = intensidad;
-};
-
-export const AddImageAlphaMap = (objeto, ruta) => {
-  objeto.material.alphaMap = loadImage(ruta);
-  objeto.material.transparent = true;
-};
-
