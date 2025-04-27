@@ -28,7 +28,7 @@ export const Luces = {
     return { luz, helper };
   },
   //----------------------------------------------------------------//
-  //                      BOMBILLA - VELA
+  //                      BOMBILLA - VELA [No Recomendado]
   //----------------------------------------------------------------//
   Puntual: (
     color = 0xffffff,
@@ -56,7 +56,7 @@ export const Luces = {
     color = 0xffffff,
     intensidad_max500 = 1,
     distancia_max20 = 0,
-    amplitudDeLuz_max1 = Math.PI / 2,
+    amplitudDeLuz_Grados = 2,
     bordePenumbra_max1 = 0.1,
     posicion = [0, 5, 0],
     objetivo = [0, 0, 0],
@@ -67,7 +67,7 @@ export const Luces = {
       color,
       intensidad_max500,
       distancia_max20,
-      amplitudDeLuz_max1,
+      amplitudDeLuz_Grados * (Math.PI / 360),
       bordePenumbra_max1,
     );
     // LUZ - Propiedades
