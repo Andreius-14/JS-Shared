@@ -47,9 +47,20 @@ export const createStats = (container) => {
   return stats;
 };
 
-export const createControls = (camera, renderer) => {
+export const createControls = (
+  camera,
+  renderer,
+  {
+    desplazarXY = false,
+    suavizarMove = true,
+    rotateAutomatic = false,
+    zoom = true,
+  } = {},
+) => {
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enablePan = false;
-  controls.enableDamping = true;
+  controls.enablePan = desplazarXY; // Desplazar X,Y de Camara
+  controls.enableDamping = suavizarMove; // Suavizar Movimiento
+  controls.autoRotate = rotateAutomatic;
+  controls.enableZoom = zoom;
   return controls;
 };
