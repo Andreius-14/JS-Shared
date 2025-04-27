@@ -1,55 +1,56 @@
-// Librerias
+// Core
 import * as THREE from "three";
-import { make, insertar, enlaceId } from "./Shared-DOM.js";
+import { loadContenedor } from "./Shared-DOM.js";
+import { getViewport } from "./Shared-Info.js";
+import {
+  createCamara,
+  createControls,
+  createRenderer,
+  createStats,
+} from "./threejs.js";
 
 //----------------------------------------------------------------//
 //                         VARIABLES
 //----------------------------------------------------------------//
-const w = globalThis.innerWidth;
-const h = globalThis.innerHeight;
+const { width, height } = getViewport();
 const pxLogico = globalThis.devicePixelRatio;
-// Constantes
+
+//----------------------------------------------------------------//
+//                         COMPONENTES
+//----------------------------------------------------------------//
 export const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000); //Recomendado (500)
-export const renderer = new THREE.WebGLRenderer({ antialias: true });
+export const camera = createCamara(); //Recomendado (500)
+export const renderer = createRenderer();
+export const box3D = loadContenedor("Contenedor3D");
 
-export let box3D = MakeContenedorThreejs("Contenedor3D");
+// ADDON
+export const stats = createStats(box3D);
+export const controls = createControls(camera, renderer);
 
-// PROPIEDADES
-document.addEventListener("DOMContentLoaded", () => {
-  // Propiedades
-  camera.position.set(0, 0, 5);
+//----------------------------------------------------------------//
+//                         EVENTOS
+//----------------------------------------------------------------//
+globalThis.addEventListener("DOMContentLoaded", initThreeJS);
+globalThis.addEventListener("resize", onWindowResize);
+globalThis.addEventListener("dblclick", onWindowFullScreen);
 
+function initThreeJS() {
   renderer.setPixelRatio(Math.min(pxLogico, 2));
-  renderer.setSize(w, h);
-  renderer.setClearColor(0x111111); // Una mejora Vizual - No afecta la Iluminacion
-
+  renderer.setSize(width, height);
+  renderer.setClearColor(0x111111);
   box3D.appendChild(renderer.domElement);
-});
+}
 
-//----------------------------------------------------------------//
-//                   FUNCIONES - PUBLICAS
-//----------------------------------------------------------------//
-function MakeContenedorThreejs(
-  idContenedor = "",
-  insertarEnBody = true,
-  idPadre = "",
-) {
-  //Verifica Existencia
-  let contenedor = enlaceId(idContenedor);
+function onWindowResize() {
+  camera.aspect = globalThis.innerWidth / globalThis.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
+}
 
-  // En Caso No Exite
-  if (!contenedor) {
-    contenedor = make("div", "", [], idContenedor);
-
-    if (idPadre) {
-      const padreElemento = enlaceId(idPadre);
-      insertar(padreElemento || document.body, contenedor);
-    }
-    if (insertarEnBody) {
-      insertar(document.body, contenedor);
-    }
+function onWindowFullScreen() {
+  if (!document.fullscreenElement) {
+    renderer.domElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
   }
-
-  return contenedor;
 }
