@@ -11,19 +11,32 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Contr
 //│ Juegos 1ra persona │ 60-90             │ Balance realismo/visibilidad │
 //└────────────────────┴───────────────────┴──────────────────────────────┘
 
-export const Camara = {
-  Orbital: () => createCamara(45, [0, 5, 10]),
-  FirstPerson: () => createCamara(75, [0, 1.6, 0]),
+//----------------------------------------------------------------//
+//                            Camara
+//----------------------------------------------------------------//
+export const Camaras = {
+  Orbital: {
+    camaraAngulo: 45,
+    posicion: [0, 5, 10],
+    distanciaMin: 0.1,
+    distanciaMax: 1000,
+  },
+  FirstPerson: {
+    camaraAngulo: 75,
+    posicion: [0, 1.6, 0],
+    distanciaMin: 0.1,
+    distanciaMax: 1000,
+  },
 };
-//----------------------------------------------------------------//
-//                            BASICO
-//----------------------------------------------------------------//
+
 export const createCamara = (
-  camaraAngulo = 45,
-  camaraPosicion = [0, 5, 10],
-  distanciaMin = 0.1,
-  distanciaMax = 1000,
-  aspect = globalThis.innerWidth / globalThis.innerHeight,
+  {
+    camaraAngulo = 45,
+    posicion = [0, 5, 10],
+    distanciaMin = 0.1,
+    distanciaMax = 1000,
+    aspect = globalThis.innerWidth / globalThis.innerHeight,
+  } = {}, // Objeto vacío por defecto
 ) => {
   const camara = new THREE.PerspectiveCamera(
     camaraAngulo,
@@ -31,8 +44,7 @@ export const createCamara = (
     distanciaMin,
     distanciaMax,
   );
-  camara.position.set(...camaraPosicion);
-
+  camara.position.set(...posicion);
   return camara;
 };
 

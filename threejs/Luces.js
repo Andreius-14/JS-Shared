@@ -1,85 +1,91 @@
 import * as THREE from "three";
-import { scene } from "./threejs_Escena_I.js";
+import { scene } from "./Escena I.js";
 
 export const Luces = {
   //----------------------------------------------------------------//
   //                           SOL
   //----------------------------------------------------------------//
-  Direccional: (
+  Sol: ({
     color = 0xffffff,
     intensidad = 1,
     posicion = [5, 5, 5],
     destino = [0, 0, 0],
     ayuda = true,
-  ) => {
-    // Variables (LUZ)
+    insertar = true,
+  } = {}) => {
+    // LUZ
     const luz = new THREE.DirectionalLight(color, intensidad);
-
-    // Propiedades (LUZ)
     luz.position.set(...posicion);
     luz.target.position.set(...destino);
-    scene.add(luz);
-    scene.add(luz.target);
 
-    // Variable (Helper)
+    // Helper
     const helper = ayuda ? new THREE.DirectionalLightHelper(luz) : null;
-    if (helper) scene.add(helper);
+
+    if (insertar) {
+      scene.add(luz, luz.target);
+      scene.add(helper);
+    }
 
     return { luz, helper };
   },
   //----------------------------------------------------------------//
   //                      BOMBILLA - VELA [No Recomendado]
   //----------------------------------------------------------------//
-  Puntual: (
+  Bombilla: ({
     color = 0xffffff,
     intensidad = 1,
     distancia = 10,
     posicion = [0, 0, 0],
     ayuda = true,
-  ) => {
-    // Variables - Luz
+    insertar = true,
+  } = {}) => {
+    // Luz
     const luz = new THREE.PointLight(color, intensidad, distancia);
-    // Propiedades
     luz.position.set(...posicion);
-    scene.add(luz);
 
-    // Variables - Helper
+    // Helper
     const helper = ayuda ? new THREE.PointLightHelper(luz) : null;
-    if (helper) scene.add(helper);
+
+    if (insertar) {
+      scene.add(luz);
+      scene.add(helper);
+    }
 
     return { luz, helper };
   },
   //----------------------------------------------------------------//
   //                         LINTERNA
   //----------------------------------------------------------------//
-  Focal: (
+  Linterna: ({
     color = 0xffffff,
-    intensidad_max500 = 1,
-    distancia_max20 = 0,
-    amplitudDeLuz_Grados = 2,
-    bordePenumbra_max1 = 0.1,
+    intensidad = 1, // rango 0-1 o Mas
+    distancia = 10,
+    anguloDeLuz = 45,
+    bordePenumbra_max1 = 0.1, // rango 0-1
     posicion = [0, 5, 0],
     objetivo = [0, 0, 0],
     ayuda = true,
-  ) => {
-    // LUZ - Variable
+    insertar = true,
+  } = {}) => {
+    // LUZ
+    const angulo = anguloDeLuz * (Math.PI / 360);
     const luz = new THREE.SpotLight(
       color,
-      intensidad_max500,
-      distancia_max20,
-      amplitudDeLuz_Grados * (Math.PI / 360),
+      intensidad,
+      distancia,
+      angulo,
       bordePenumbra_max1,
     );
-    // LUZ - Propiedades
     luz.position.set(...posicion);
     luz.target.position.set(...objetivo);
 
-    scene.add(luz);
-    scene.add(luz.target);
-
     // Helper
     const helper = ayuda ? new THREE.SpotLightHelper(luz) : null;
-    if (helper) scene.add(helper);
+
+    if (insertar) {
+      scene.add(luz, luz.target);
+      scene.add(helper);
+    }
 
     return { luz, helper };
   },
@@ -100,3 +106,5 @@ export const Luces = {
 //╠═══════════════════╬══════════════════════════╬══════════════════════════╬══════════════════════════╣
 //║    Uso típico     ║     Luz diurna           ║   Focos/reflectores      ║ Lámparas/fuentes puntual.║
 //╚═══════════════════╩══════════════════════════╩══════════════════════════╩══════════════════════════╝
+
+// Esta bien si quieres simplificarlos mas es tu problema

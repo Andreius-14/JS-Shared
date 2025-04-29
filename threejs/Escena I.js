@@ -1,13 +1,13 @@
 // Core
 import * as THREE from "three";
-import { loadContenedor } from "./Shared-DOM.js";
-import { getViewport } from "./Shared-Info.js";
+import { loadContenedor } from "../Shared-DOM.js";
+import { getViewport } from "../Shared-Info.js";
 import {
   createCamara,
   createControls,
   createRenderer,
   createStats,
-} from "./threejs.js";
+} from "./Escena II.js";
 
 //----------------------------------------------------------------//
 //                         VARIABLES
@@ -35,6 +35,10 @@ globalThis.addEventListener("resize", onWindowResize);
 globalThis.addEventListener("dblclick", onWindowFullScreen);
 
 function initThreeJS() {
+  // Evita Bordes Blancos
+  document.body.style.margin = "0";
+  document.body.style.padding = "0";
+  // Logica Threejs
   renderer.setPixelRatio(Math.min(pxLogico, 2));
   renderer.setSize(width, height);
   renderer.setClearColor(0x111111);

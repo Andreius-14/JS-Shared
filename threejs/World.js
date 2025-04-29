@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { scene } from "./threejs_Escena_I.js";
-import { worldColor } from "./Shared-Const.js";
+import { scene } from "./Escena I.js";
+import { worldColor } from "../Shared-Const.js";
 
 export const World = {
   // Helpers visuales
@@ -34,7 +34,7 @@ export const World = {
     scene.fog = new THREE.Fog(color, near, far);
   },
 
-  Light: (color = worldColor.white, intensity = 0.5) => {
+  Light: (color = worldColor.white, intensity = 1) => {
     const light = new THREE.AmbientLight(color, intensity);
     scene.add(light);
     return light;
