@@ -1,16 +1,10 @@
 import * as THREE from "three";
-import { scene } from "./Escena I.js";
 
 //----------------------------------------------------------------//
 //                           OBJETO3D
 //----------------------------------------------------------------//
 
-//----------------//
-//      BASIC
-//----------------//
-
 // --> Objeto Puro
-// --> Solo Lo Basico -  Keep Simple
 export const geo = {
   Cubo: (ancho = 1, alto = 1, profundidad = 1) => {
     return new THREE.BoxGeometry(ancho, alto, profundidad);
@@ -43,31 +37,40 @@ export const materiales = {
   // Agrega Mas
 };
 
-//----------------//
-//  PERSONALIZADO
-//----------------//
-export function geometria3D({
-  geometria = geo.Esfera(),
-  material = materiales.Drogas(),
-  posicion = [0, 0, 0],
-  rotacion = [0, 0, 0],
-  escala = [1, 1, 1],
-  nombre = "",
-  color = null,
-  insertarToScene = true,
-} = {}) {
-  if (color) material.color = new THREE.Color(color);
+//----------------------------------------------------------------//
+//                           FUNCTION
+//----------------------------------------------------------------//
+export function geometria3D(
+  escena,
+  {
+    geometria = geo.Esfera(),
+    material = materiales.Drogas(),
+    posicion = [0, 0, 0],
+    rotacion = [0, 0, 0],
+    escala = [1, 1, 1],
+    nombre = "",
+    color = null,
+    insertarToScene = true,
+  } = {},
+) {
+  // Validación básica
+  if (!escena?.isScene) throw new Error("Se requiere una escena válida");
 
-  // Crear el objeto 3D
-  const objeto3D = new THREE.Mesh(geometria, material);
+  // Configurar material
+  const materialFinal = material.clone();
+  if (color) materialFinal.color = new THREE.Color(color);
 
-  // Configurar propiedades del objeto
+  // Crear mesh
+  const objeto3D = new THREE.Mesh(geometria, materialFinal);
+
+  // Transformaciones
   objeto3D.position.set(...posicion);
   objeto3D.rotation.set(...rotacion);
   objeto3D.scale.set(...escala);
 
+  // Metadata
   if (nombre) objeto3D.name = nombre;
-  if (insertarToScene) scene.add(objeto3D);
+  if (insertarToScene) escena.add(objeto3D);
 
   return objeto3D;
 }

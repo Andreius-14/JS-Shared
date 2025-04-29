@@ -1,96 +1,106 @@
 import * as THREE from "three";
-import { scene } from "./Escena I.js";
-
+//----------------------------------------------------------------//
+//                       OBJETO GLOBAL
+//----------------------------------------------------------------//
+// Objeto contenedor (opcional)
 export const Luces = {
-  //----------------------------------------------------------------//
-  //                           SOL
-  //----------------------------------------------------------------//
-  Sol: ({
+  Direccional: crearLuzDireccional,
+  Puntual: crearLuzPuntual,
+  Focal: crearLuzFocal,
+
+  // Aliases (opcionales)
+  Sol: crearLuzDireccional,
+  Bombilla: crearLuzPuntual,
+  Linterna: crearLuzFocal,
+};
+//----------------------------------------------------------------//
+//                       FUNCTION
+//----------------------------------------------------------------//
+
+// SOL
+export function crearLuzDireccional(
+  escena,
+  posicion = [5, 5, 5],
+  {
     color = 0xffffff,
     intensidad = 1,
-    posicion = [5, 5, 5],
     destino = [0, 0, 0],
     ayuda = true,
     insertar = true,
-  } = {}) => {
-    // LUZ
-    const luz = new THREE.DirectionalLight(color, intensidad);
-    luz.position.set(...posicion);
-    luz.target.position.set(...destino);
+  } = {},
+) {
+  const luz = new THREE.DirectionalLight(color, intensidad);
+  luz.position.set(...posicion);
+  luz.target.position.set(...destino);
+  const helper = ayuda ? new THREE.DirectionalLightHelper(luz) : null;
 
-    // Helper
-    const helper = ayuda ? new THREE.DirectionalLightHelper(luz) : null;
+  if (insertar) {
+    escena.add(luz, luz.target);
+    if (helper) escena.add(helper);
+  }
 
-    if (insertar) {
-      scene.add(luz, luz.target);
-      scene.add(helper);
-    }
+  return { luz, helper };
+}
 
-    return { luz, helper };
-  },
-  //----------------------------------------------------------------//
-  //                      BOMBILLA - VELA [No Recomendado]
-  //----------------------------------------------------------------//
-  Bombilla: ({
+//Bombilla
+export function crearLuzPuntual(
+  escena,
+  posicion = [0, 5, 0], // Corregido: posición como parámetro
+  {
     color = 0xffffff,
     intensidad = 1,
     distancia = 10,
-    posicion = [0, 0, 0],
     ayuda = true,
     insertar = true,
-  } = {}) => {
-    // Luz
-    const luz = new THREE.PointLight(color, intensidad, distancia);
-    luz.position.set(...posicion);
+  } = {},
+) {
+  const luz = new THREE.PointLight(color, intensidad, distancia);
+  luz.position.set(...posicion);
+  const helper = ayuda ? new THREE.PointLightHelper(luz) : null;
 
-    // Helper
-    const helper = ayuda ? new THREE.PointLightHelper(luz) : null;
+  if (insertar) {
+    escena.add(luz);
+    if (helper) escena.add(helper);
+  }
 
-    if (insertar) {
-      scene.add(luz);
-      scene.add(helper);
-    }
-
-    return { luz, helper };
-  },
-  //----------------------------------------------------------------//
-  //                         LINTERNA
-  //----------------------------------------------------------------//
-  Linterna: ({
+  return { luz, helper };
+}
+// Linterna
+export function crearLuzFocal(
+  escena,
+  posicion = [0, 5, 0],
+  objetivo = [0, 0, 0],
+  {
     color = 0xffffff,
-    intensidad = 1, // rango 0-1 o Mas
+    intensidad = 1,
     distancia = 10,
     anguloDeLuz = 45,
-    bordePenumbra_max1 = 0.1, // rango 0-1
-    posicion = [0, 5, 0],
-    objetivo = [0, 0, 0],
+    bordePenumbra_max1 = 0.1,
     ayuda = true,
     insertar = true,
-  } = {}) => {
-    // LUZ
-    const angulo = anguloDeLuz * (Math.PI / 360);
-    const luz = new THREE.SpotLight(
-      color,
-      intensidad,
-      distancia,
-      angulo,
-      bordePenumbra_max1,
-    );
-    luz.position.set(...posicion);
-    luz.target.position.set(...objetivo);
+  } = {},
+) {
+  const anguloRad = (anguloDeLuz * THREE.MathUtils.DEG2RAD) / 2; // Conversión mejorada
+  //anguloDeLuz * (Math.PI / 360),
+  const luz = new THREE.SpotLight(
+    color,
+    intensidad,
+    distancia,
+    anguloRad,
+    bordePenumbra_max1,
+  );
 
-    // Helper
-    const helper = ayuda ? new THREE.SpotLightHelper(luz) : null;
+  luz.position.set(...posicion);
+  luz.target.position.set(...objetivo);
+  const helper = ayuda ? new THREE.SpotLightHelper(luz) : null;
 
-    if (insertar) {
-      scene.add(luz, luz.target);
-      scene.add(helper);
-    }
+  if (insertar) {
+    escena.add(luz, luz.target);
+    if (helper) escena.add(helper);
+  }
 
-    return { luz, helper };
-  },
-};
-
+  return { luz, helper };
+}
 //╔═══════════════════╦══════════════════════════╦══════════════════════════╦══════════════════════════╗
 //║                   ║  DirectionalLight (Sol)  ║    SpotLight (Linterna)  ║  PointLight (Bombilla)   ║
 //╠═══════════════════╬══════════════════════════╬══════════════════════════╬══════════════════════════╣
