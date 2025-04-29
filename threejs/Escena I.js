@@ -1,60 +1,56 @@
 // Core
 import * as THREE from "three";
-import { loadContenedor } from "../Shared-DOM.js";
-import { getViewport } from "../Shared-Info.js";
 import {
   createCamara,
+  createContenedor,
   createControls,
   createRenderer,
+  createScene,
   createStats,
 } from "./Escena II.js";
 
 //----------------------------------------------------------------//
-//                         VARIABLES
+//                         INIT
 //----------------------------------------------------------------//
-const { width, height } = getViewport();
-const pxLogico = globalThis.devicePixelRatio;
-
-//----------------------------------------------------------------//
-//                         COMPONENTES
-//----------------------------------------------------------------//
-export const scene = new THREE.Scene();
+export const scene = createScene();
 export const camera = createCamara(); //Recomendado (500)
 export const renderer = createRenderer();
-export const box3D = loadContenedor("Contenedor3D");
-
+export const box3D = createContenedor("Contenedor3D");
 // ADDON
 export const stats = createStats(box3D);
 export const controls = createControls(camera, renderer);
 
 //----------------------------------------------------------------//
-//                         EVENTOS
+//                         Eventos
 //----------------------------------------------------------------//
-globalThis.addEventListener("DOMContentLoaded", initThreeJS);
-globalThis.addEventListener("resize", onWindowResize);
-globalThis.addEventListener("dblclick", onWindowFullScreen);
-
 function initThreeJS() {
   // Evita Bordes Blancos
   document.body.style.margin = "0";
   document.body.style.padding = "0";
   // Logica Threejs
-  renderer.setPixelRatio(Math.min(pxLogico, 2));
-  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2));
+  renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
   renderer.setClearColor(0x111111);
   box3D.appendChild(renderer.domElement);
 }
 
-function onWindowResize() {
+function eventoResize() {
   camera.aspect = globalThis.innerWidth / globalThis.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
 }
 
-function onWindowFullScreen() {
+function eventoFullScreen() {
   if (!document.fullscreenElement) {
     renderer.domElement.requestFullscreen();
   } else {
     document.exitFullscreen();
   }
 }
+
+//----------------------------------------------------------------//
+//                         Listener
+//----------------------------------------------------------------//
+globalThis.addEventListener("DOMContentLoaded", initThreeJS);
+globalThis.addEventListener("resize", eventoResize);
+globalThis.addEventListener("dblclick", eventoFullScreen);

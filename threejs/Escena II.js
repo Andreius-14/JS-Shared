@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { loadContenedor } from "../Shared-DOM.js";
 // Addons
 import Stats from "three/addons/libs/stats.module.js"; // Consumo
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Control de Camara
@@ -28,16 +29,13 @@ export const Camaras = {
     distanciaMax: 1000,
   },
 };
-
-export const createCamara = (
-  {
-    camaraAngulo = 45,
-    posicion = [0, 5, 10],
-    distanciaMin = 0.1,
-    distanciaMax = 1000,
-    aspect = globalThis.innerWidth / globalThis.innerHeight,
-  } = {}, // Objeto vacío por defecto
-) => {
+export const createCamara = ({
+  camaraAngulo = 45,
+  posicion = [0, 5, 10],
+  distanciaMin = 0.1,
+  distanciaMax = 1000,
+  aspect = globalThis.innerWidth / globalThis.innerHeight,
+} = {}) => {
   const camara = new THREE.PerspectiveCamera(
     camaraAngulo,
     aspect,
@@ -48,14 +46,27 @@ export const createCamara = (
   return camara;
 };
 
-export const createRenderer = () =>
-  new THREE.WebGLRenderer({ antialias: true });
+//----------------------------------------------------------------//
+//                            BASICO
+//----------------------------------------------------------------//
+
+export const createScene = () => {
+  return new THREE.Scene();
+};
+export const createRenderer = () => {
+  return new THREE.WebGLRenderer({ antialias: true });
+};
+
+export const createContenedor = (id = "container", idPadreOpcional = "") => {
+  return loadContenedor(id, idPadreOpcional);
+};
+
 //----------------------------------------------------------------//
 //                            ADDON
 //----------------------------------------------------------------//
-export const createStats = (container) => {
+export const createStats = (container, insertar = true) => {
   const stats = new Stats();
-  container.appendChild(stats.dom);
+  if (insertar) container.appendChild(stats.dom);
   return stats;
 };
 
