@@ -38,6 +38,8 @@ function crearEje(scene, size = 10) {
 
 function crearGrid(scene, size = 50, divisions = 10) {
   const helper = new THREE.GridHelper(size, divisions);
+  //helper.material.opacity = 0.2;
+  //helper.material.transparent = true;
   scene.add(helper);
   return helper;
 }

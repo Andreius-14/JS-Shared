@@ -24,6 +24,16 @@ async function cargarTextura(ruta) {
   }
 }
 
+export const cargarModeloGlb = async (ruta) => {
+  const loader = Loaders.modelo();
+  try {
+    const gltf = await loader.loadAsync(ruta);
+    return gltf.scene;
+  } catch (error) {
+    console.error(`Error cargando ${ruta}:`, error);
+    throw error; // Opcional: relanzar el error si necesitas manejarlo externamente
+  }
+};
 //----------------------------------------------------------------//
 //                  FUNCIONES PÚBLICAS
 //----------------------------------------------------------------//
