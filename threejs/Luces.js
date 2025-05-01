@@ -21,20 +21,14 @@ export const Luces = {
 export function crearLuzDireccional(
   escena,
   posicion = [5, 5, 5],
-  {
-    color = 0xffffff,
-    intensidad = 1,
-    destino = [0, 0, 0],
-    ayuda = true,
-    insertar = true,
-  } = {},
+  { color = 0xffffff, intensidad = 3, destino = [0, 0, 0], ayuda = true } = {},
 ) {
   const luz = new THREE.DirectionalLight(color, intensidad);
   luz.position.set(...posicion);
   luz.target.position.set(...destino);
   const helper = ayuda ? new THREE.DirectionalLightHelper(luz) : null;
 
-  if (insertar) {
+  if (escena) {
     escena.add(luz, luz.target);
     if (helper) escena.add(helper);
   }
@@ -46,19 +40,13 @@ export function crearLuzDireccional(
 export function crearLuzPuntual(
   escena,
   posicion = [0, 5, 0], // Corregido: posición como parámetro
-  {
-    color = 0xffffff,
-    intensidad = 1,
-    distancia = 10,
-    ayuda = true,
-    insertar = true,
-  } = {},
+  { color = 0xffffff, intensidad = 1, distancia = 10, ayuda = true } = {},
 ) {
   const luz = new THREE.PointLight(color, intensidad, distancia);
   luz.position.set(...posicion);
   const helper = ayuda ? new THREE.PointLightHelper(luz) : null;
 
-  if (insertar) {
+  if (escena) {
     escena.add(luz);
     if (helper) escena.add(helper);
   }
@@ -77,7 +65,6 @@ export function crearLuzFocal(
     anguloDeLuz = 45,
     bordePenumbra_max1 = 0.1,
     ayuda = true,
-    insertar = true,
   } = {},
 ) {
   const anguloRad = (anguloDeLuz * THREE.MathUtils.DEG2RAD) / 2; // Conversión mejorada
@@ -94,7 +81,7 @@ export function crearLuzFocal(
   luz.target.position.set(...objetivo);
   const helper = ayuda ? new THREE.SpotLightHelper(luz) : null;
 
-  if (insertar) {
+  if (escena) {
     escena.add(luz, luz.target);
     if (helper) escena.add(helper);
   }

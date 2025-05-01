@@ -40,17 +40,20 @@ export const createControls = (
   camera,
   renderer,
   {
+    objetivo,
     desplazarXY = false,
     suavizarMove = true,
     rotateAutomatic = false,
     zoom = true,
   } = {},
 ) => {
+  // Guarda la rotación ANTES de crear OrbitControls
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enablePan = desplazarXY; // Desplazar X,Y de Camara
   controls.enableDamping = suavizarMove; // Suavizar Movimiento
   controls.autoRotate = rotateAutomatic;
   controls.enableZoom = zoom;
+  if (objetivo) controls.target.set(...objetivo);
   return controls;
 };
 
@@ -84,33 +87,47 @@ export const Camaras = {
     rotacion: [Math.PI, 0, 0], // Rotación para corregir orientación
   },
 };
-
-export const createCamara = (config = Camaras.Principal) => {
-  let camara;
-
-  if (config.tipo === "Orthographic") {
-    camara = new THREE.OrthographicCamera(
-      config.left,
-      config.right,
-      config.top,
-      config.bottom,
-      config.near,
-      config.far,
-    );
-  }
-  if (config.tipo === "Perspective") {
-    camara = new THREE.PerspectiveCamera(
-      config.angulo, // Para compatibilidad con tu código antiguo
-      globalThis.innerWidth / globalThis.innerHeight,
-      config.near,
-      config.far,
-    );
-  }
-
-  camara.position.set(...config.posicion);
-  if (config.rotacion) camara.rotation.set(...config.rotacion);
+export const createCamara = (
+  pov = 45,
+  near = 0.2,
+  far = 100,
+  posicion = [-5, 3, 10],
+  objetivo = [0, 2, 0],
+) => {
+  const aspect = globalThis.innerWidth / globalThis.innerHeight;
+  const camara = new THREE.PerspectiveCamera(pov, aspect, near, far);
+  camara.position.set(...posicion);
+  camara.lookAt(...objetivo);
   return camara;
 };
+//export const createCamaraPredeterminada = ({
+//  config = Camaras.Principal,
+//} = {}) => {
+//  let camara;
+//
+//  if (config.tipo === "Perspective") {
+//    camara = new THREE.PerspectiveCamera(
+//      config.angulo, // Para compatibilidad con tu código antiguo
+//      globalThis.innerWidth / globalThis.innerHeight,
+//      config.near,
+//      config.far,
+//    );
+//  }
+//  if (config.tipo === "Orthographic") {
+//    camara = new THREE.OrthographicCamera(
+//      config.left,
+//      config.right,
+//      config.top,
+//      config.bottom,
+//      config.near,
+//      config.far,
+//    );
+//  }
+//
+//  camara.position.set(...config.posicion);
+//  if (config.rotacion) camara.rotation.set(...config.rotacion);
+//  return camara;
+//};
 
 //----------------------------------------------------------------//
 //                      Configuracion
@@ -130,7 +147,7 @@ export const config_Renderer = (renderer, container) => {
   container.appendChild(renderer.domElement);
 };
 
-export const config_Animation = (renderer, funcionAnimate) => {
-  renderer.setAnimationLoop(animate); // Inicia
+export const config_Animation = (renderer, funcionAnimateName) => {
+  renderer.setAnimationLoop(funcionAnimateName); // Inicia
   //renderer.setAnimationLoop(null);  // Detiene
 };

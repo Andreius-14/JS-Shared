@@ -13,15 +13,18 @@ export const World = {
   // Elementos del entorno
   Floor: crearSuelo,
   Niebla: crearNiebla,
+
+  // Elementos Iluminacion
   Light: crearLuzAmbiental,
   Background: crearFondo,
 
-  // Aliases adicionales (opcionales)
-  Eje: crearEje,
-  Cuadricula: crearGrid,
-  Suelo: crearSuelo,
-  Fog: crearNiebla,
+  // Aliases (opcionales)
+  AxesHelper: crearEje,
+  GridHelper: crearGrid,
   AmbientLight: crearLuzAmbiental,
+  HemisphereLight: creaLuzCieloTierra,
+  Fog: crearNiebla,
+  Suelo: crearSuelo,
   Fondo: crearFondo,
 };
 
@@ -36,10 +39,10 @@ function crearEje(scene, size = 10) {
   return helper;
 }
 
-function crearGrid(scene, size = 50, divisions = 10) {
+function crearGrid(scene, size = 50, divisions = 10, opacidad = 0.2) {
   const helper = new THREE.GridHelper(size, divisions);
-  //helper.material.opacity = 0.2;
-  //helper.material.transparent = true;
+  helper.material.opacity = opacidad;
+  helper.material.transparent = true;
   scene.add(helper);
   return helper;
 }
@@ -61,14 +64,37 @@ function crearNiebla(scene, color = worldColor.grey, near = 20, far = 50) {
   scene.fog = new THREE.Fog(color, near, far);
 }
 
+function crearFondo(scene, color = worldColor.grey) {
+  scene.background = new THREE.Color(color);
+}
+
+//----------------------------------------------------------------//
+//                        ILUMINACION
+//----------------------------------------------------------------//
 function crearLuzAmbiental(scene, color = worldColor.dark_gray, intensity = 1) {
   const light = new THREE.AmbientLight(color, intensity);
   scene.add(light);
   return light;
 }
-
-function crearFondo(scene, color = worldColor.grey) {
-  scene.background = new THREE.Color(color);
+//efecto natural (ej: un paisaje con cielo y suelo diferenciados).
+export function creaLuzCieloTierra(
+  scena,
+  posicion = [0, 20, 0],
+  skyColor = 0xffffff,
+  groundColor = 0x8d8d8d,
+  intensidad = 3,
+) {
+  const luz = new THREE.HemisphereLight(skyColor, groundColor, intensidad);
+  luz.position.set(...posicion);
+  if (scena) scena.add(luz);
+  return luz;
 }
-
-// Objeto contenedor (opcional)
+//+------------------+----------------------------+------------------------------+
+//|   Característica | AmbientLight               | HemisphereLight              |
+//+------------------+----------------------------+------------------------------+
+//| Iluminación      | Uniforme                   | Cielo/suelo (2 colores)      |
+//| Sombras          | ❌ No                      | ❌ No                        |
+//| Realismo         | Bajo                       | Alto                         |
+//| Uso              | Interiores                 | Exteriores                   |
+//| Rendimiento      | Óptimo                     | Bueno                        |
+//+------------------+----------------------------+------------------------------+
