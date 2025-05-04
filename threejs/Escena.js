@@ -19,8 +19,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Contr
 export const createScene = () => {
   return new THREE.Scene();
 };
-export const createRenderer = () => {
-  return new THREE.WebGLRenderer({ antialias: true });
+export const createRenderer = ({ sombra = false } = {}) => {
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.shadowMap.enabled = sombra;
+  // renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Opcional: sombras más suaves // Predeterminado
+  return renderer;
 };
 
 export const createContenedor = (id = "container", idPadreOpcional = "") => {
