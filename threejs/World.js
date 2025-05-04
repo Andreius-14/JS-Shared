@@ -47,7 +47,12 @@ function crearGrid(scene, size = 50, divisions = 10, opacidad = 0.2) {
   return helper;
 }
 
-function crearSuelo(scene, color = worldColor.grey, size = 20) {
+function crearSuelo(
+  scene,
+  color = worldColor.grey,
+  size = 20,
+  { recibeSombra = false } = {},
+) {
   const mesh = new THREE.Mesh(
     new THREE.PlaneGeometry(size, size),
     new THREE.MeshPhongMaterial({
@@ -56,7 +61,10 @@ function crearSuelo(scene, color = worldColor.grey, size = 20) {
     }),
   );
   mesh.rotation.x = -Math.PI / 2;
-  scene.add(mesh);
+  mesh.receiveShadow = recibeSombra;
+
+  if (scene) scene.add(mesh);
+
   return mesh;
 }
 
