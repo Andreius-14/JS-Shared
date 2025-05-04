@@ -14,14 +14,14 @@ export const Luces = {
   Linterna: crearLuzFocal,
 };
 //----------------------------------------------------------------//
-//                       FUNCTION
+//                       SOL
 //----------------------------------------------------------------//
 
 // SOL
 export function crearLuzDireccional(
   escena,
   posicion = [5, 5, 5],
-  { color = 0xffffff, intensidad = 3, destino = [0, 0, 0], ayuda = true } = {},
+  { color = 0xffffff, intensidad = 3, destino = [0, 0, 0], ayuda = false } = {},
 ) {
   const luz = new THREE.DirectionalLight(color, intensidad);
   luz.position.set(...posicion);
@@ -33,10 +33,41 @@ export function crearLuzDireccional(
     if (helper) escena.add(helper);
   }
 
-  return { luz, helper };
+  return [luz, helper];
 }
+export function AddShadowtoDireccional(
+  scene,
+  objetoLuz,
+  {
+    calidad = 512,
+    rangoShadowCamera = 2,
+    near = 0.5, // Nuevo: configurabilidad para near/far
+    far = 50,
+    ayuda = false,
+  } = {},
+) {
+  objetoLuz.castShadow = true;
+  //Calidad del shadow map
+  objetoLuz.shadow.mapSize.set(calidad, calidad);
+  //Área de sombras (usando valores proporcionados o defaults)
+  objetoLuz.shadow.camera.top = rangoShadowCamera;
+  objetoLuz.shadow.camera.bottom = -rangoShadowCamera;
+  objetoLuz.shadow.camera.left = -rangoShadowCamera;
+  objetoLuz.shadow.camera.right = rangoShadowCamera;
 
-//Bombilla
+  // Distancia de sombras
+  objetoLuz.shadow.camera.near = near;
+  objetoLuz.shadow.camera.far = far;
+
+  // Corrección de artefactos (recomendado)
+  objetoLuz.shadow.bias = -0.001;
+
+  if (ayuda) scene.add(new THREE.CameraHelper(objetoLuz.shadow.camera));
+}
+//----------------------------------------------------------------//
+//                       BOMBILLA
+//----------------------------------------------------------------//
+
 export function crearLuzPuntual(
   escena,
   posicion = [0, 5, 0], // Corregido: posición como parámetro
@@ -53,7 +84,11 @@ export function crearLuzPuntual(
 
   return { luz, helper };
 }
-// Linterna
+
+//----------------------------------------------------------------//
+//                       BOMBILLA
+//----------------------------------------------------------------//
+
 export function crearLuzFocal(
   escena,
   posicion = [0, 5, 0],
