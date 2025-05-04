@@ -25,19 +25,22 @@ async function cargarTextura(ruta) {
   }
 }
 
-export const cargarModeloGlb = (ruta, onProgress) => {
+export const cargarModeloGlb = (addToScene, ruta, onProgress) => {
   return new Promise((resolve, reject) => {
     const loader = new GLTFLoader();
 
     loader.load(
       ruta,
-      (gltf) => resolve([gltf.scene, gltf.animations]), // ← Ahora devuelve array
+      (gltf) => {
+        if (addToScene) addToScene.add(gltf.scene);
+        resolve([gltf.scene, gltf.animations]);
+      }, // ← Ahora devuelve array
       (xhr) => {
         const progress = (xhr.loaded / xhr.total) * 100;
         onProgress?.(progress) || console.log(`${progress.toFixed(2)}% loaded`);
       },
       (error) => {
-        console.error(`Error loading ${ruta}:`, error);
+        console.log(`Error loading ${ruta}:`, error);
         reject(new Error(`Failed to load model: ${error.message}`));
       },
     );
