@@ -1,6 +1,5 @@
 import * as THREE from "three";
 
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 //----------------------------------------------------------------//
 //                     CARGADORES
 //----------------------------------------------------------------//
@@ -25,40 +24,6 @@ async function cargarTextura(ruta) {
   }
 }
 
-export const cargarModeloGlb = (addToScene, ruta, onProgress) => {
-  return new Promise((resolve, reject) => {
-    const loader = new GLTFLoader();
-
-    loader.load(
-      ruta,
-      (gltf) => {
-        if (addToScene) addToScene.add(gltf.scene);
-        resolve([gltf.scene, gltf.animations]);
-      }, // ← Ahora devuelve array
-      (xhr) => {
-        const progress = (xhr.loaded / xhr.total) * 100;
-        onProgress?.(progress) || console.log(`${progress.toFixed(2)}% loaded`);
-      },
-      (error) => {
-        console.log(`Error loading ${ruta}:`, error);
-        reject(new Error(`Failed to load model: ${error.message}`));
-      },
-    );
-  });
-}; //const loader = new GLTFLoader();
-//loader.load(
-//  "./RobotExpressive/RobotExpressive.glb",
-//  (gltf) => {
-//    model = gltf.scene;
-//    scene.add(model);
-//
-//    createGUI(model, gltf.animations);
-//  },
-//  undefined,
-//  (e) => {
-//    console.error(e);
-//  },
-//);
 //----------------------------------------------------------------//
 //                  FUNCIONES PÚBLICAS
 //----------------------------------------------------------------//
