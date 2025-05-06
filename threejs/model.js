@@ -54,11 +54,13 @@ export function createMixer(modelo3D) {
 //----------------------------------------------------------------//
 //                     FUNCIONES ANIMACIONES
 //----------------------------------------------------------------//
-export function groupMixerClipAction(mixer, animations) {
+export function groupActionsByName(mixer, animations) {
+  // Animaciones -> clips  --> Entonces de Un clip -> action
   // variable
   const actions = {};
   for (const clip of animations) {
     if (clip.name) {
+      // Animacion del Clip
       actions[clip.name] = mixer.clipAction(clip);
     }
   }
@@ -82,6 +84,44 @@ export function configAnimations(
   });
 }
 
+export function enableShadows(model, { cast = true, receive = false } = {}) {
+  model.traverse((obj) => {
+    if (obj.isMesh) {
+      obj.castShadow = cast;
+      obj.receiveShadow = receive;
+    }
+  });
+}
+
+function pauseAllActions(actions) {
+  actions.forEach(function (action) {
+    action.paused = true;
+  });
+}
+
+function unPauseAllActions(actions) {
+  actions.forEach(function (action) {
+    action.paused = false;
+  });
+}
+
+// Ejecuta Todas las Animacion - Recomendaria 1 a la Vez
+// pero esto es codigo encontrado y guardado
+function activateAllActions(actions) {
+  // setWeight(idleAction, settings["modify idle weight"]);
+  // setWeight(walkAction, settings["modify walk weight"]);
+  // setWeight(runAction, settings["modify run weight"]);
+
+  actions.forEach(function (action) {
+    action.play();
+  });
+}
+
+function deactivateAllActions(actions) {
+  actions.forEach((action) => {
+    action.stop();
+  });
+}
 //----------------------------------------------------------------//
 //              OBJETO UNIFICADOR DE ANIMACIONES
 //----------------------------------------------------------------//
@@ -89,12 +129,13 @@ export const Model = {
   loops: LOOP_TYPES,
   // Nombre Puros
   createMixer,
-  groupMixerClipAction,
+  groupActionsByName,
   configAnimations,
   createSkeletonHelper,
+  enableShadows,
   // Minimalista
   load: cargarModeloGlb,
   mixer: createMixer,
   skeletonHelper: createSkeletonHelper,
-  groupAnimation: groupMixerClipAction,
+  groupAnimation: groupActionsByName,
 };
