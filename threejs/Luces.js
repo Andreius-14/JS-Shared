@@ -8,6 +8,9 @@ export const Luces = {
   Puntual: crearLuzPuntual,
   Focal: crearLuzFocal,
 
+  // Sombras
+  shadowDirecional: AddShadowtoDireccional,
+
   // Aliases (opcionales)
   Sol: crearLuzDireccional,
   Bombilla: crearLuzPuntual,
@@ -21,19 +24,31 @@ export const Luces = {
 export function crearLuzDireccional(
   escena,
   posicion = [5, 5, 5],
-  { color = 0xffffff, intensidad = 3, destino = [0, 0, 0], ayuda = false } = {},
+  {
+    color = 0xffffff,
+    intensidad = 3,
+    destino = [0, 0, 0],
+    ayuda = false,
+    generaSombra = false,
+  } = {},
 ) {
-  const luz = new THREE.DirectionalLight(color, intensidad);
+  //variables
+  let luz, helper;
+
+  luz = new THREE.DirectionalLight(color, intensidad);
   luz.position.set(...posicion);
   luz.target.position.set(...destino);
-  const helper = ayuda ? new THREE.DirectionalLightHelper(luz) : null;
 
-  if (escena) {
-    escena.add(luz, luz.target);
-    if (helper) escena.add(helper);
+  escena?.add(luz, luz.target);
+
+  if (generaSombra) AddShadowtoDireccional(escena, luz);
+  if (ayuda) {
+    helper = new THREE.DirectionalLightHelper(luz);
+    escena?.add(helper);
+    return [luz, helper];
   }
 
-  return [luz, helper];
+  return luz;
 }
 export function AddShadowtoDireccional(
   scene,
