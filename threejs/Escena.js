@@ -223,7 +223,8 @@ export const config_Renderer = (renderer, container) => {
   renderer.setClearColor(0x111111);
   container.appendChild(renderer.domElement);
 };
-
+// Obsoleto usar settAnimationLoop fuera de esta function
+// requestAnimationFrame(animate);
 export const config_Animation = (renderer, funcionAnimateName) => {
   renderer.setAnimationLoop(funcionAnimateName); // Inicia
   //renderer.setAnimationLoop(null);  // Detiene
