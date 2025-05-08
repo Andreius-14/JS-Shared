@@ -34,7 +34,7 @@ export function groupActionsByName(mixer, animations) {
   }
   return actions;
 }
-// grupoDeAnimacion = {
+// animationGroup = {
 //       "animacion1" : mixer.clipAction(clip),
 //       "animacion2" : mixer.clipAction(clip),
 //       "animacion3" : mixer.clipAction(clip),
@@ -43,14 +43,25 @@ export function groupActionsByName(mixer, animations) {
 
 // 🕹️ Configura las animaciones disponibles a partir de los clips
 export function configAnimations(
-  animationGroup,
-  { tipoDeLoop = LOOP_TYPES.bucle, pausarAlFinalizar = false } = {},
+  target,
+  tipoDeLoop = LOOP_TYPES.bucle,
+  pausarAlFinalizar = false,
 ) {
-  Object.values(animationGroup).forEach((action) => {
+  const actions = Array.isArray(target)
+    ? target
+    : target instanceof THREE.AnimationAction
+      ? [target]
+      : Object.values(target);
+
+  actions.forEach((action) => {
     action.loop = tipoDeLoop;
     action.clampWhenFinished = pausarAlFinalizar;
   });
 }
+
+//actions = [mixer.clipAction(clip),mixer.clipAction(clip),mixer.clipAction(clip)]
+//action = mixer.clipAction(clip)
+
 //----------------------------------------------------------------//
 //                          ACTIONS
 //----------------------------------------------------------------//
@@ -78,12 +89,31 @@ function deactivateAllActions(actions) {
   });
 }
 
+function fadeToAction(name, duration) {
+  previousAction = activeAction;
+  activeAction = actions[name];
+
+  if (previousAction !== activeAction) {
+    previousAction.fadeOut(duration);
+  }
+
+  activeAction
+    .reset()
+    .setEffectiveTimeScale(1)
+    .setEffectiveWeight(1)
+    .fadeIn(duration)
+    .play();
+}
+
 //----------------------------------------------------------------//
 //              OBJETO UNIFICADOR DE ANIMACIONES
 //----------------------------------------------------------------//
 export const Anime = {
+  loop: LOOP_TYPES,
   // Directo
   createMixer,
+  createClock,
+
   groupActionsByName,
   configAnimations,
   // Minimalista
