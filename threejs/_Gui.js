@@ -64,6 +64,23 @@ settings = {
   "modify time scale": 1.0,
 };
 
+// FOLDER 1 -- Toggle
+const states = [
+  "Idle",
+  "Walking",
+  "Running",
+  "Dance",
+  "Death",
+  "Sitting",
+  "Standing",
+];
+
+const clipCtrl = statesFolder.add(api, "state").options(states);
+
+clipCtrl.onChange(function () {
+  fadeToAction(api.state, 0.5);
+});
+
 //----------------------------------------------------------------//
 //                   INSERTAR - CONFIGURACION
 //----------------------------------------------------------------//
