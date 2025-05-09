@@ -3,11 +3,10 @@ import * as THREE from "three";
 import { enableShadows } from "./_shared.js";
 
 //----------------------------------------------------------------//
-//                     GEOMETRIA BASICA
+//                     Functions
 //----------------------------------------------------------------//
 export const geometriaBasica = {
-  Cubo: (ancho = 1, alto = 1, profundidad = 1) =>
-    new THREE.BoxGeometry(ancho, alto, profundidad),
+  Cubo: (size = 1) => new THREE.BoxGeometry(size, size, size),
 
   Esfera: (radio = 0.7, segmentos = 32, anillos = 16) =>
     new THREE.SphereGeometry(radio, segmentos, anillos),
@@ -70,7 +69,7 @@ export function createGeometriaBasica(
 //        OBJETO UNIFICADOR
 //-------------------------------------//
 export const geo = geometriaBasica;
-export const material = materialesBasicos;
+export const mat = materialesBasicos;
 export const geometria3D = createGeometriaBasica;
 
 export const Mesh = {
