@@ -16,7 +16,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Contr
 //----------------------------------------------------------------//
 //                            BASICO
 //----------------------------------------------------------------//
-
 export const createScene = () => {
   return new THREE.Scene();
 };
@@ -32,6 +31,7 @@ export const createContenedor = (id = "container", idPadreOpcional = "") => {
 
 export const createCamara = camara.Perspective;
 export const loadCamara = camara;
+
 //----------------------------------------------------------------//
 //                            ADDON
 //----------------------------------------------------------------//
@@ -41,31 +41,46 @@ export const createStats = (container, insertar = true) => {
   return stats;
 };
 
-export const createControls = (
-  camera,
-  renderer,
-  {
-    objetivo,
-    desplazarXY = false,
-    suavizarMove = true,
-    rotateAutomatic = false,
-    zoom = true,
-  } = {},
-) => {
-  // Guarda la rotación ANTES de crear OrbitControls
+export const createControls = (camera, renderer) => {
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enablePan = desplazarXY; // Desplazar X,Y de Camara
-  controls.enableDamping = suavizarMove; // Suavizar Movimiento
-  controls.autoRotate = rotateAutomatic;
-  controls.enableZoom = zoom;
-  if (objetivo) controls.target.set(...objetivo);
   return controls;
+};
+
+export const create = {
+  scene: createScene,
+  renderer: createRenderer,
+  contenedor: createContenedor,
+  stats: createStats,
+  controls: createControls,
+  camera: createCamara,
+  loadCamara,
 };
 
 //----------------------------------------------------------------//
 //                      Configuracion
 //----------------------------------------------------------------//
-
+export const config_controls = (
+  controls,
+  {
+    min,
+    max,
+    objetivo,
+    desplazarXY = false,
+    suavizarMove = true,
+    rotateAutomatic = false,
+    zoom = true,
+    atraviesaSuelo = true,
+  } = {},
+) => {
+  controls.enablePan = desplazarXY; // Desplazar X,Y de Camara
+  controls.enableDamping = suavizarMove; // Suavizar Movimiento
+  controls.autoRotate = rotateAutomatic;
+  controls.enableZoom = zoom;
+  if (objetivo) controls.target.set(...objetivo);
+  if (min) controls.minDistance = min;
+  if (max) controls.maxDistance = max;
+  if (!atraviesaSuelo) controls.maxPolarAngle = Math.PI / 2;
+};
 // config.js
 export const config_Estilos = () => {
   document.body.style.margin = "0";
@@ -84,4 +99,11 @@ export const config_Renderer = (renderer, container) => {
 export const config_Animation = (renderer, funcionAnimateName) => {
   renderer.setAnimationLoop(funcionAnimateName); // Inicia
   //renderer.setAnimationLoop(null);  // Detiene
+};
+
+export const config = {
+  Estilos: config_Estilos,
+  Renderer: config_Renderer,
+  Animation: config_Animation,
+  Controls: config_controls,
 };

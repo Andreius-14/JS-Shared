@@ -32,6 +32,7 @@ export const materialesBasicos = {
   recibeSombra: () => new THREE.ShadowMaterial(),
 
   Drogas: () => new THREE.MeshNormalMaterial(),
+  Reflectante: () => new THREE.MeshPhongMaterial(),
   // Agrega Mas
 };
 

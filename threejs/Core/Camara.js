@@ -102,14 +102,17 @@ const configCamera = {
   },
 };
 
-function createCameraPerspective({
-  posicion = [-5, 3, 10],
-  objetivo = [0, 2, 0],
+function createCameraPerspective(
   pov = 45,
   near = 0.2,
   far = 100,
-  aspect = globalThis.innerWidth / globalThis.innerHeight,
-} = {}) {
+
+  {
+    posicion = [-5, 3, 10],
+    objetivo = [0, 2, 0],
+    aspect = globalThis.innerWidth / globalThis.innerHeight,
+  } = {},
+) {
   const camara = new THREE.PerspectiveCamera(pov, aspect, near, far);
   camara.position.set(...posicion);
   camara.lookAt(...objetivo);

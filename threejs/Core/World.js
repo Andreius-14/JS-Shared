@@ -134,7 +134,7 @@ export class WorldBuilder {
       new THREE.PlaneGeometry(size, size),
       new THREE.MeshPhongMaterial({
         color,
-        depthWrite: false,
+        // depthWrite: false,
       }),
     );
     mesh.rotation.x = -Math.PI / 2;

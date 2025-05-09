@@ -201,7 +201,10 @@ export class LightBuilder {
       helper = false,
     } = {},
   ) {
+    // Habilita
     light.castShadow = true;
+
+    // Delimita
     light.shadow.mapSize.set(quality, quality);
     light.shadow.camera.top = shadowCameraRange;
     light.shadow.camera.bottom = -shadowCameraRange;
@@ -248,19 +251,21 @@ export class LightBuilder {
     color = 0xffffff,
     intensity = 1,
     distance = 10,
-    angle = 45,
+    angleGrados = 45,
+    angleRadian = null,
     penumbraBorde = 0.1,
     ayuda = false,
+    shadow = false,
   } = {}) {
-    const angleRad = (angle * THREE.MathUtils.DEG2RAD) / 2;
-    const light = new THREE.SpotLight(
-      color,
-      intensity,
-      distance,
-      angleRad,
-      penumbraBorde,
-    );
+    const anguloConvertido = (angleGrados * THREE.MathUtils.DEG2RAD) / 2;
+    const angulo = angleRadian || anguloConvertido;
 
+    const light = new THREE.SpotLight(color, intensity);
+
+    light.distance = distance;
+    light.angle = angulo;
+    light.penumbra = penumbraBorde;
+    light.castShadow = shadow;
     light.position.set(...position);
     light.target.position.set(...objetivo);
 
@@ -286,7 +291,7 @@ export class LightBuilder {
   get Point() {
     return this.createPoint;
   }
-  get Focal() {
+  get Spot() {
     return this.createSpot;
   }
 
