@@ -14,23 +14,17 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Contr
 //└────────────────────┴───────────────────┴──────────────────────────────┘
 
 //----------------------------------------------------------------//
-//                            BASICO
+//                            Core
 //----------------------------------------------------------------//
-export const createScene = () => {
-  return new THREE.Scene();
-};
-export const createRenderer = ({ sombra = false } = {}) => {
+export const createContenedor = loadContenedor;
+export const createCamara = camara.Perspective;
+
+export const createScene = () => new THREE.Scene();
+
+export const createRenderer = () => {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.shadowMap.enabled = sombra;
   return renderer;
 };
-
-export const createContenedor = (id = "container", idPadreOpcional = "") => {
-  return loadContenedor(id, idPadreOpcional);
-};
-
-export const createCamara = camara.Perspective;
-export const loadCamara = camara;
 
 //----------------------------------------------------------------//
 //                            ADDON
@@ -46,64 +40,90 @@ export const createControls = (camera, renderer) => {
   return controls;
 };
 
+//----------------------------------------------------------------//
+//                            Camara
+//----------------------------------------------------------------//
+
 export const create = {
+  // Core
   scene: createScene,
   renderer: createRenderer,
   contenedor: createContenedor,
+  // Addons
   stats: createStats,
   controls: createControls,
+  // Camara
   camera: createCamara,
-  loadCamara,
+  loadCamara: camara,
 };
 
 //----------------------------------------------------------------//
 //                      Configuracion
 //----------------------------------------------------------------//
-export const config_controls = (
-  controls,
-  {
-    min,
-    max,
-    objetivo,
-    desplazarXY = false,
-    suavizarMove = true,
-    rotateAutomatic = false,
-    zoom = true,
-    atraviesaSuelo = true,
-  } = {},
-) => {
-  controls.enablePan = desplazarXY; // Desplazar X,Y de Camara
-  controls.enableDamping = suavizarMove; // Suavizar Movimiento
-  controls.autoRotate = rotateAutomatic;
-  controls.enableZoom = zoom;
-  if (objetivo) controls.target.set(...objetivo);
-  if (min) controls.minDistance = min;
-  if (max) controls.maxDistance = max;
-  if (!atraviesaSuelo) controls.maxPolarAngle = Math.PI / 2;
-};
-// config.js
+// Configuracion Basica -- Para Estilos CSS
 export const config_Estilos = () => {
   document.body.style.margin = "0";
   document.body.style.padding = "0";
   document.body.style.overflow = "hidden"; // Evita scrollbars
 };
 
+// Configuracion Basica -- Para Renderer
 export const config_Renderer = (renderer, container) => {
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2));
   renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
   renderer.setClearColor(0x111111);
   container.appendChild(renderer.domElement);
 };
-// Obsoleto usar settAnimationLoop fuera de esta function
-// requestAnimationFrame(animate);
+
+export const config_controls = (
+  controls,
+  { zoom = true, soft = true, stopFloor = true } = {},
+) => {
+  controls.enableZoom = zoom;
+  controls.enableDamping = soft; // Suavizar Movimiento
+  if (stopFloor) controls.maxPolarAngle = Math.PI / 2;
+};
+
+// Configuracionn Basica -- Para Animacion
 export const config_Animation = (renderer, funcionAnimateName) => {
   renderer.setAnimationLoop(funcionAnimateName); // Inicia
   //renderer.setAnimationLoop(null);  // Detiene
+  // Obsoleto usar settAnimationLoop fuera de esta function
+  // requestAnimationFrame(animate);
 };
+
+//----------------------------------------------------------------//
+//                      EXTRA
+//----------------------------------------------------------------//
+export const extra_controls = (
+  controls,
+  { min, max, objetivo, desplazarXY = false, rotate = false } = {},
+) => {
+  controls.enablePan = desplazarXY;
+  controls.autoRotate = rotate;
+
+  if (min) controls.minDistance = min;
+  if (max) controls.maxDistance = max;
+  if (objetivo) controls.target.set(...objetivo);
+  controls.update();
+};
+
+export const extra_renderer = (renderer, { sombra = false } = {}) => {
+  renderer.shadowMap.enabled = sombra;
+};
+
+//----------------------------------------------------------------//
+//                      UNIFICADOR
+//----------------------------------------------------------------//
 
 export const config = {
   Estilos: config_Estilos,
   Renderer: config_Renderer,
   Animation: config_Animation,
   Controls: config_controls,
+};
+
+export const extra = {
+  Controls: extra_controls,
+  Renderer: extra_renderer,
 };

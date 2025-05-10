@@ -193,34 +193,27 @@ export class LightBuilder {
 
   addShadowToDirectional(
     light,
-    {
-      quality = 512,
-      shadowCameraRange = 2,
-      near = 0.5,
-      far = 50,
-      helper = false,
-    } = {},
+    { quality = 512, range = 2, near = 0.5, far = 50, helper = false } = {},
   ) {
     // Habilita
     light.castShadow = true;
 
-    // Delimita
     light.shadow.mapSize.set(quality, quality);
-    light.shadow.camera.top = shadowCameraRange;
-    light.shadow.camera.bottom = -shadowCameraRange;
-    light.shadow.camera.left = -shadowCameraRange;
-    light.shadow.camera.right = shadowCameraRange;
+
+    light.shadow.camera.top = range;
+    light.shadow.camera.bottom = -range;
+    light.shadow.camera.left = -range;
+    light.shadow.camera.right = range;
+
     light.shadow.camera.near = near;
     light.shadow.camera.far = far;
     light.shadow.bias = -0.001;
 
-    const shadowHelper = helper
-      ? new THREE.CameraHelper(light.shadow.camera)
-      : null;
+    const help = helper ? new THREE.CameraHelper(light.shadow.camera) : null;
 
-    if (shadowHelper) this.scene?.add(shadowHelper);
+    if (help) this.scene?.add(help);
 
-    return shadowHelper;
+    return help;
   }
 
   createPoint({

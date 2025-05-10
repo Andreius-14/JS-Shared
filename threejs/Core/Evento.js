@@ -28,6 +28,10 @@ export const EventoFullScreen = (renderer) => {
   renderer.domElement.addEventListener("dblclick", alternar);
 };
 
+export const evento = {
+  Resize: EventoResize,
+  FullScreen: EventoFullScreen,
+};
 //Bloquea el Mouse dentro del Cambas
 //Mueve la Camara
 

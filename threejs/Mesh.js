@@ -25,18 +25,25 @@ export const geometriaBasica = {
 };
 
 export const materialesBasicos = {
-  color: () => new THREE.MeshBasicMaterial(),
+  Color: () => new THREE.MeshBasicMaterial(),
   Sombra: () => new THREE.MeshStandardMaterial(),
+
   Normal: () => new THREE.MeshNormalMaterial(),
   Imagen: () => new THREE.MeshStandardMaterial(),
-  recibeSombra: () => new THREE.ShadowMaterial(),
+  RecibeSombra: () => new THREE.ShadowMaterial(),
 
+  // Alias
   Drogas: () => new THREE.MeshNormalMaterial(),
   Reflectante: () => new THREE.MeshPhongMaterial(),
-  // Agrega Mas
 };
 
-export function createGeometriaBasica(
+export function createGeometriaSimple(geometria, material, color) {
+  const objM = material;
+  objM.color = new THREE.Color(color);
+  const obj3D = new THREE.Mesh(geometria, objM);
+  return obj3D;
+}
+export function createGeometria(
   escena,
   {
     geo = geometriaBasica.Esfera(),
@@ -71,11 +78,12 @@ export function createGeometriaBasica(
 //-------------------------------------//
 export const geo = geometriaBasica;
 export const mat = materialesBasicos;
-export const geometria3D = createGeometriaBasica;
+export const geometria3D = createGeometria;
 
 export const Mesh = {
   // Directo
   enableShadows,
   // Minimalista
-  create: createGeometriaBasica,
+  create: createGeometria,
+  simple: createGeometriaSimple,
 };
