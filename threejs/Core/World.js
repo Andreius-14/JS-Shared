@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { color, colorHex } from "../../Shared-Const.js";
+import { colorCss, colorHex } from "../../Shared-Const.js";
 import { Mesh, geo, mat } from "../Mesh.js";
 
 //+------------------+----------------------------+------------------------------+
@@ -13,7 +13,7 @@ import { Mesh, geo, mat } from "../Mesh.js";
 //+------------------+----------------------------+------------------------------+
 
 export class WorldBuilder {
-  constructor(scene, color = "grey") {
+  constructor(scene, color = colorCss.lightGrey) {
     this.scene = scene;
     this.color = color;
   }
