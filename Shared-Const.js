@@ -1,6 +1,8 @@
 // COLORES - Hexadecimal
 export const colorHex = {
   // Colores básicos
+  black: 0x000000,
+  white: 0xffffff,
   red: 0xff0000,
   green: 0x00ff00,
   blue: 0x0000ff,
@@ -14,31 +16,32 @@ export const colorHex = {
   darkGreen: 0x008000, // En lugar de verdeOscuro
   darkBlue: 0x000080, // En lugar de azulOscuro
   darkRed: 0x800000, // En lugar de brown (más descriptivo)
+  darkGray: 0x404040, // En camelCase
 
   // Escala de grises
-  lightGray: 0xe0e0e0, // En lugar de grey
+  lightGrey: 0xe0e0e0, // En lugar de grey
   mediumGray: 0xa0a0a0, // Gris intermedio (faltaba)
-  darkGray: 0x404040, // En camelCase
-  black: 0x000000,
-  white: 0xffffff,
 };
 // COLORES - HEXADECIMAL STRING
 
-export const color = {
+export const colorCss = {
+  black: "#000000",
+  white: "#ffffff",
   red: "#FF0000",
   green: "#00FF00",
   blue: "#0000FF",
   yellow: "#FFFF00",
   magenta: "#FF00FF",
-  cian: "#00FFFF",
+  cyan: "#00FFFF",
   orange: "#FFA500",
   purple: "#800080",
-  verdeOscuro: "#008000",
-  azulOscuro: "#000080",
-  brown: "#800000",
-  grey: "#e0e0e0",
-  black: "#000000",
-  dark_gray: "#404040",
-  white: "#ffffff",
-};
 
+  darkGreen: "#008000",
+  darkBlue: "#000080",
+  darkRed: "#800000",
+  darkGray: "#404040",
+
+  brown: "#800000",
+  lightGrey: "#e0e0e0",
+  mediumGray: "#a0a0a0",
+};
