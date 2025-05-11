@@ -16,6 +16,8 @@ export class WorldBuilder {
   constructor(scene, color = colorCss.lightGrey) {
     this.scene = scene;
     this.color = color;
+    this.ambientLight = null;
+    this.hemiLight = null;
   }
 
   //------------------
@@ -63,9 +65,9 @@ export class WorldBuilder {
   //------------------
 
   createAmbientLight(color = this.color, intensity = 1) {
-    const light = new THREE.AmbientLight(color, intensity);
+    this.ambientLight = new THREE.AmbientLight(color, intensity);
     this.scene.add(light);
-    return light;
+    return this.ambientLight;
   }
 
   createHemisphereLight(
@@ -74,12 +76,31 @@ export class WorldBuilder {
     floor = 0x8d8d8d,
     intensity = 3,
   ) {
-    const light = new THREE.HemisphereLight(sky, floor, intensity);
+    this.hemiLight = new THREE.HemisphereLight(sky, floor, intensity);
     light.position.set(...position);
     this.scene.add(light);
-    return light;
+    return this.hemiLight;
   }
+  createLightRealista(
+    renderer,
+    { intensity = 0.04, resolucion = 256, disableBasicLights = true } = {},
+  ) {
+    const pmremGenerator = new THREE.PMREMGenerator(renderer); // Cuarto - Efecto de Luz
+    pmremGenerator.setResolution(resolucion);
 
+    // Generar mapa de entorno realista
+    const envMap = pmremGenerator.fromScene(new RoomEnvironment(), intensity);
+    envMap.texture.encoding = THREE.sRGBEncoding;
+    this.scene.environment = envMap.texture;
+
+    pmremGenerator.dispose(); // liberar recursos
+
+    // 3. Desactivar luces básicas si existen
+    if (disableBasicLights) {
+      if (this.ambientLight) this.scene.remove(this.ambientLight);
+      if (this.hemiLight) this.scene.remove(this.hemiLight);
+    }
+  }
   //------------------
   //   ALIAS
   //------------------
