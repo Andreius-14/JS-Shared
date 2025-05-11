@@ -66,7 +66,7 @@ export class WorldBuilder {
 
   createAmbientLight(color = this.color, intensity = 1) {
     this.ambientLight = new THREE.AmbientLight(color, intensity);
-    this.scene.add(light);
+    this.scene.add(this.ambientLight);
     return this.ambientLight;
   }
 
@@ -78,7 +78,7 @@ export class WorldBuilder {
   ) {
     this.hemiLight = new THREE.HemisphereLight(sky, floor, intensity);
     light.position.set(...position);
-    this.scene.add(light);
+    this.scene.add(this.hemiLight);
     return this.hemiLight;
   }
   createLightRealista(
