@@ -68,7 +68,7 @@ export function createGeometria(
 
   // Metadata
   if (nombre) objeto3D.name = nombre;
-  if (shadow) enableShadows(objeto3D);
+  if (shadow) enableShadows(objeto3D, true, true);
   if (escena) escena.add(objeto3D);
 
   return objeto3D;
