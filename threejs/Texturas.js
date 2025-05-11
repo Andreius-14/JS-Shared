@@ -87,6 +87,9 @@ export const Texturas = {
   AddImageAlphaMap: AddAlphaMap,
   AddImageNormalMap: AddNormalMap,
   AddImageAO: AddAO,
+
+  // Extra
+  load: cargarTextura,
 };
 
 // Uso recomendado:
