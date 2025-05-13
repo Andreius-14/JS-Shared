@@ -40,7 +40,20 @@ export class WorldBuilder {
   //   ELEMENTOS
   //------------------
 
+  createFog(near = 20, far = 50, color = this.color) {
+    // MediumGrey: 0xa0a0a0
+    this.scene.fog = new THREE.Fog(color, near, far);
+    return this.scene.fog;
+  }
+
+  setBackground(color = this.color) {
+    //NeutroGrey: 0xcbcbcb - // MediumGrey:0xa0a0a0 //lightGrey: 0xe0e0e0,
+    this.scene.background = new THREE.Color(color);
+    return this.scene.background;
+  }
+
   createFloor(color = this.color, size = 20, shadow = false) {
+    // NeutroGrey: 0xcbcbcb
     const g = geo.Plano(size, size);
     const m = mat.Reflectante();
     const mesh = Mesh.simple(g, m, color);
@@ -50,21 +63,11 @@ export class WorldBuilder {
     this.scene.add(mesh);
     return mesh;
   }
-
-  createFog(near = 20, far = 50, color = this.color) {
-    this.scene.fog = new THREE.Fog(color, near, far);
-    return this.scene.fog;
-  }
-
-  setBackground(color = this.color) {
-    this.scene.background = new THREE.Color(color);
-    return this.scene.background;
-  }
   //------------------
   //   ILUMINACION
   //------------------
 
-  createAmbientLight(color = this.color, intensity = 1) {
+  createAmbientLight(color = 0xffffff, intensity = 1) {
     this.ambientLight = new THREE.AmbientLight(color, intensity);
     this.scene.add(this.ambientLight);
     return this.ambientLight;
@@ -77,10 +80,11 @@ export class WorldBuilder {
     intensity = 3,
   ) {
     this.hemiLight = new THREE.HemisphereLight(sky, floor, intensity);
-    light.position.set(...position);
+    this.hemiLight.position.set(...position);
     this.scene.add(this.hemiLight);
     return this.hemiLight;
   }
+
   createLightRealista(
     renderer,
     { intensity = 0.04, resolucion = 256, disableBasicLights = true } = {},
