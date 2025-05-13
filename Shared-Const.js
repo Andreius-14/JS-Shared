@@ -20,7 +20,8 @@ export const colorHex = {
 
   // Escala de grises
   lightGrey: 0xe0e0e0, // En lugar de grey
-  mediumGray: 0xa0a0a0, // Gris intermedio (faltaba)
+  mediumGrey: 0xa0a0a0, // Gris intermedio (faltaba)
+  neutroGrey: 0xcbcbcb,
 };
 // COLORES - HEXADECIMAL STRING
 
@@ -43,5 +44,6 @@ export const colorCss = {
 
   brown: "#800000",
   lightGrey: "#e0e0e0",
-  mediumGray: "#a0a0a0",
+  neutroGrey: "#cbcbcb",
+  mediumGrey: "#a0a0a0",
 };
