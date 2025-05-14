@@ -35,11 +35,15 @@ export const createStats = (container, insertar = true) => {
   return stats;
 };
 
-export const createControls = (camera, renderer) => {
-  const controls = new OrbitControls(camera, renderer.domElement);
-  return controls;
+// export const createControls = (camera, renderer) => {
+//   const controls = new OrbitControls(camera, renderer.domElement);
+//   return controls;
+// };
+export const createControls = (camera, renderer_Or_Dom) => {
+  const domElement = renderer_Or_Dom.domElement || renderer_Or_Dom;
+  if (!domElement) throw new Error("Elemento DOM o renderizador inválido");
+  return new OrbitControls(camera, domElement);
 };
-
 //----------------------------------------------------------------//
 //                            Camara
 //----------------------------------------------------------------//
@@ -111,6 +115,10 @@ export const extra_controls = (
 export const extra_renderer = (renderer, { sombra = false } = {}) => {
   renderer.shadowMap.enabled = sombra;
 };
+
+// export const extra_camera = (camera, { ayuda = false }) => {
+//   const cameraHelper = new THREE.CameraHelper(camera);
+// };
 
 //----------------------------------------------------------------//
 //                      UNIFICADOR
