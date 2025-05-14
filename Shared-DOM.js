@@ -34,11 +34,13 @@ export function make(tag, text = "", classes = [], id = "") {
 export function loadContenedor(
   idContenedor = "container",
   idPadre = "",
-  deseaInsertar = true,
+
+  { deseaInsertar = true, classes = [], tag = "div" } = {},
 ) {
   //EnlaceID
   const boxDad = enlaceId(idPadre) || document.body;
-  const boxChild = enlaceId(idContenedor) || make("div", "", [], idContenedor);
+  const boxChild =
+    enlaceId(idContenedor) || make(tag, "", classes, idContenedor);
 
   if (deseaInsertar) insertar(boxDad, boxChild);
 
