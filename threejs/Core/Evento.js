@@ -1,17 +1,31 @@
+//----------------------------------------------------------------//
+//                           AYUDA
+//----------------------------------------------------------------//
+
+export const debounce = (fn, delay = 100) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+};
+
+//----------------------------------------------------------------//
+//                         EVENTOS
+//----------------------------------------------------------------//
+
 export const EventoResize = (camara, renderer) => {
   const actualizar = () => {
-    camara.aspect = globalThis.innerWidth / globalThis.innerHeight;
+    //variables
+    const [w, h] = [globalThis.innerWidth, globalThis.innerHeight];
+    //configuracion
+    camara.aspect = w / h;
     camara.updateProjectionMatrix();
-    renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
+    //extra
+    renderer.setSize(w, h);
   };
 
-  // Debounce para mejorar rendimiento
-  let debounce;
-  globalThis.addEventListener("resize", () => {
-    clearTimeout(debounce);
-    debounce = setTimeout(actualizar, 100);
-  });
-
+  globalThis.addEventListener("resize", debounce(actualizar));
   actualizar();
 };
 
@@ -29,9 +43,14 @@ export const EventoFullScreen = (renderer) => {
 };
 
 export const evento = {
+  //NameOriginal
+  // MultiResizes,
+
+  //Alias
   Resize: EventoResize,
   FullScreen: EventoFullScreen,
 };
+
 //Bloquea el Mouse dentro del Cambas
 //Mueve la Camara
 
@@ -56,3 +75,34 @@ export const evento = {
 //    document.removeEventListener("mousemove", moverCamara);
 //  };
 //};
+
+// export const MultiResizes = (
+//   renderer,
+//   camaras = [{ cam: null, scale: null }],
+// ) => {
+//   const actualizar = () => {
+//     // variables
+//     const [w, h] = [globalThis.innerWidth, globalThis.innerHeight];
+//
+//     camaras.forEach(({ cam, scale }) => {
+//       if (!cam) return;
+//       // console.log(cam);
+//       // console.log(scale);
+//       if (scale) {
+//         const insetw = h / scale;
+//         const inseth = h / scale;
+//         cam.aspect = insetw / inseth; // cuadrado
+//       } else {
+//         cam.aspect = w / h;
+//       }
+//       console.log(cam.aspect);
+//
+//       cam.updateProjectionMatrix();
+//     });
+//
+//     renderer.setSize(w, h);
+//   };
+//
+//   globalThis.addEventListener("resize", debounce(actualizar));
+//   actualizar();
+// };
