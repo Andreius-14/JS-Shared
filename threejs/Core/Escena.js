@@ -4,6 +4,7 @@ import { camara } from "./Camara.js";
 // Addons
 import Stats from "three/addons/libs/stats.module.js"; // Consumo
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Control de Camara
+import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 //┌────────────────────┬───────────────────┬──────────────────────────────┐
 //│ Tipo de Vista      │ fov Recomendado   │ Efecto                       │
 //├────────────────────┼───────────────────┼──────────────────────────────┤
@@ -44,6 +45,25 @@ export const createControls = (camera, renderer_Or_Dom) => {
   if (!domElement) throw new Error("Elemento DOM o renderizador inválido");
   return new OrbitControls(camera, domElement);
 };
+
+const createControlFirstPerson = (
+  camera,
+  Dom,
+  { evento = false, escena = null } = {},
+) => {
+  const element = Dom.domElement || Dom;
+  const controls = new PointerLockControls(camera, element);
+
+  if (evento) {
+    element.addEventListener("click", () => {
+      controls.lock();
+    });
+  }
+
+  escena?.add(controls.object);
+
+  return controls;
+};
 //----------------------------------------------------------------//
 //                            Camara
 //----------------------------------------------------------------//
@@ -56,6 +76,7 @@ export const create = {
   // Addons
   stats: createStats,
   controls: createControls,
+  controlFP: createControlFirstPerson,
   // Camara
   camera: createCamara,
   loadCamara: camara,
@@ -87,6 +108,8 @@ export const config_controls = (
   controls.enableDamping = soft; // Suavizar Movimiento
   if (stopFloor) controls.maxPolarAngle = Math.PI / 2;
 };
+
+// export const config_ControlFirstPerson = () => {};
 
 // Configuracionn Basica -- Para Animacion
 export const config_Animation = (renderer, funcionAnimateName) => {
