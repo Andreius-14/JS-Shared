@@ -1,0 +1,115 @@
+  //----------------------------------------------------------------//
+  //                          Init
+  //----------------------------------------------------------------//
+// cálculo de física
+const velocity = new THREE.Vector3(); // Velocidad actual del jugador
+const direction = new THREE.Vector3(); // Dirección del movimiento
+
+// control de movimiento
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+let canJump = false;
+
+
+  const onKeyDown = function (event) {
+    switch (event.code) {
+      case "ArrowUp":
+      case "KeyW": // Tecla W o flecha arriba - mover adelante
+        moveForward = true;
+        break;
+
+      case "ArrowLeft":
+      case "KeyA": // Tecla A o flecha izquierda - mover izquierda
+        moveLeft = true;
+        break;
+
+      case "ArrowDown":
+      case "KeyS": // Tecla S o flecha abajo - mover atrás
+        moveBackward = true;
+        break;
+
+      case "ArrowRight":
+      case "KeyD": // Tecla D o flecha derecha - mover derecha
+        moveRight = true;
+        break;
+
+      case "Space": // Barra espaciadora - saltar
+        if (canJump === true) velocity.y += 350; // Aplica fuerza de salto
+        canJump = false; // Evita saltos múltiples
+        break;
+    }
+  };
+
+  const onKeyUp = function (event) {
+    switch (event.code) {
+      case "ArrowUp":
+      case "KeyW":
+        moveForward = false;
+        break;
+
+      case "ArrowLeft":
+      case "KeyA":
+        moveLeft = false;
+        break;
+
+      case "ArrowDown":
+      case "KeyS":
+        moveBackward = false;
+        break;
+
+      case "ArrowRight":
+      case "KeyD":
+        moveRight = false;
+        break;
+    }
+  };
+
+  // Asigna los event listeners para teclado
+  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keyup", onKeyUp);
+
+  //----------------------------------------------------------------//
+  //                          Animate
+  //----------------------------------------------------------------//
+    //-------------------
+    //  Plano Cartesiano
+    //-------------------
+
+    // ==> y (Arriba Abajo)
+    // ==> x (Derecha e Izquierda)
+    // ==> z (Atraz Adelante)
+
+    // Fisica - FRICCION
+    // ==> Sin el codigo no hay freno igual a Patinar
+    velocity.x -= velocity.x * 10.0 * dt;
+    velocity.z -= velocity.z * 10.0 * dt;
+
+    // Fisica - Gravedad
+    velocity.y -= 9.8 * 100.0 * dt;
+
+    // Fisica - Direccion del Movimiento
+    direction.z = Number(moveForward) - Number(moveBackward); // Ej: 1 (adelante) o -1 (atrás)
+    direction.x = Number(moveRight) - Number(moveLeft); // Ej: 1 (derecha) o -1 (izquierda)
+    direction.normalize(); // Asegura que el movimiento diagonal no sea más rápido
+
+    // Fisica - Tecla Presionada
+    if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * dt;
+    if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * dt;
+
+   // APLICAR FISICA AL PROPIETARIO
+   
+    // APLICAR MOVIMIENTO CALCULADO
+    controls.moveRight(-velocity.x * dt);
+    controls.moveForward(-velocity.z * dt);
+    controls.object.position.y += velocity.y * dt;
+
+    // LIMITE INFERIOR
+    // ==> Maximo que puede Llegar hacia abajo
+    if (controls.object.position.y < 10) {
+      controls.object.position.y = 10;
+      velocity.y = 0;
+      canJump = true;
+    }
+  }

@@ -1,0 +1,60 @@
+
+Multiples camaras
+Tenemos la camara-02
+
+Imagina que queremos un minimapa
+    - Usar setViewport
+    - usar un segundo Rendera
+
+const renderer = new THREE.WebGLRenderer({ canvas });
+const canvas = renderer.domElement;
+const mainCamera = new THREE.PerspectiveCamera(...);
+const miniMapCamera = new THREE.OrthographicCamera(...); // Cámara para minimapa
+
+
+
+┌────────────────────────────┬────────────────────────────┬────────────────────────────┐
+│ Método                     │ Por qué                    │ Ideal para                 │
+├────────────────────────────┼────────────────────────────┼────────────────────────────┤
+│ setViewport                │ Simple y eficiente, usa un │ Minimapas rápidos y        │
+│ (Renderizar en una porción │ solo renderer, buen        │ funcionales en juegos      │
+│ del canvas principal)      │ rendimiento.               │ simples o prototipos.      │
+├────────────────────────────┼────────────────────────────┼────────────────────────────┤
+│ Segundo WebGLRenderer      │ Flexible para estilizar    │ Proyectos con UI elaborado │
+│ (Canvas separado con       │ con CSS, integra con HTML. │ o minimapas interactivos   │
+│ HTML/CSS)                  │                            │ en interfaces web.         │
+├────────────────────────────┼────────────────────────────┼────────────────────────────┤
+│ Escena secundaria con      │ Optimiza rendimiento con   │ Minimapas abstractos en    │
+│ cámara ortográfica         │ objetos simplificados,     │ juegos de estrategia o     │
+│                            │ control detallado.         │ aplicaciones con alta      │
+│                            │                            │ optimización.              │
+└────────────────────────────┴────────────────────────────┴────────────────────────────┘
+
+setViewport _---------------------------------------
+    Toda ventana debe ser renderizada con renderer.setViewport(
+    Cada ventana debete tener su
+          renderer.render(scene, camera);
+          renderer.render(scene, camera2);
+
+    Apartir de la 2da Ventana habilitamos el 
+        renderer.setScissorTest(true);
+              renderer.setScissor(20, 20, insetWidth, insetHeight);
+              renderer.setViewport(20, 20, insetWidth, insetHeight);
+
+              camera2.position.copy(camera.position);
+              camera2.quaternion.copy(camera.quaternion);
+              renderer.render(scene, camera2);
+        renderer.setScissorTest(false);
+
+
+
+
+function render() {
+  // Escena principal
+  renderer.setViewport(0, 0, canvas.width, canvas.height);
+  renderer.render(scene, mainCamera);
+
+  // Minimapa en la esquina inferior derecha
+  renderer.setViewport(canvas.width - 200, 0, 200, 200);
+  renderer.render(scene, miniMapCamera);
+}
