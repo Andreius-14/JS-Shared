@@ -21,7 +21,7 @@ export const EventoResize = (camara, renderer) => {
     //configuracion
     camara.aspect = w / h;
     camara.updateProjectionMatrix();
-    //extra
+    //Final
     renderer.setSize(w, h);
   };
 
