@@ -1,5 +1,12 @@
 import * as THREE from "three";
-
+//┌────────────────────┬───────────────────┬──────────────────────────────┐
+//│ Tipo de Vista      │ fov Recomendado   │ Efecto                       │
+//├────────────────────┼───────────────────┼──────────────────────────────┤
+//│ Vista humana       │ 45-55             │ Perspectiva natural          │
+//│ Zoom cercano       │ 20-30             │ Efecto telescópico           │
+//│ Vista amplia       │ 60-85             │ Gran angular (distorsión)    │
+//│ Juegos 1ra persona │ 60-90             │ Balance realismo/visibilidad │
+//└────────────────────┴───────────────────┴──────────────────────────────┘
 //----------------------------------------------------------------//
 //                            Camara
 //----------------------------------------------------------------//
@@ -105,7 +112,7 @@ const configCamera = {
 function createCameraPerspective({
   pov = 45,
   near = 0.2,
-  far = 100,
+  far = 500,
   posicion = [-5, 3, 10],
   objetivo = [0, 2, 0],
   aspect = globalThis.innerWidth / globalThis.innerHeight,
