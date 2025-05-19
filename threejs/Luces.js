@@ -55,12 +55,12 @@ export class LightBuilder {
 
   addShadowToDirectional(
     light,
-    { quality = 512, range = 2, near = 0.5, far = 50, helper = false } = {},
+    { quality = 512, range = 2, near = 0.5, far = 30, helper = false } = {},
   ) {
     // Habilita
     light.castShadow = true;
-
-    light.shadow.mapSize.set(quality, quality);
+    light.shadow.mapSize.width = quality;
+    light.shadow.mapSize.height = quality;
 
     light.shadow.camera.top = range;
     light.shadow.camera.bottom = -range;
@@ -157,7 +157,7 @@ export class LightBuilder {
       color = 0xffffff,
       intensity = 3,
       objetivo = [0, 0, 0],
-      ayuda = true,
+      ayuda = false,
       generaSombra = false,
     } = {}) => {
       // <- `= {}` evita errores si no se pasa nada
