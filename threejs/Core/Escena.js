@@ -5,14 +5,6 @@ import { camara } from "./Camara.js";
 import Stats from "three/addons/libs/stats.module.js"; // Consumo
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"; // Control de Camara
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
-//┌────────────────────┬───────────────────┬──────────────────────────────┐
-//│ Tipo de Vista      │ fov Recomendado   │ Efecto                       │
-//├────────────────────┼───────────────────┼──────────────────────────────┤
-//│ Vista humana       │ 45-55             │ Perspectiva natural          │
-//│ Zoom cercano       │ 20-30             │ Efecto telescópico           │
-//│ Vista amplia       │ 60-85             │ Gran angular (distorsión)    │
-//│ Juegos 1ra persona │ 60-90             │ Balance realismo/visibilidad │
-//└────────────────────┴───────────────────┴──────────────────────────────┘
 
 //----------------------------------------------------------------//
 //                            Core
@@ -20,13 +12,21 @@ import { PointerLockControls } from "three/addons/controls/PointerLockControls.j
 export const createContenedor = loadContenedor;
 export const createCamara = camara.Perspective;
 
-export const createScene = () => new THREE.Scene();
-
-export const createRenderer = () => {
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  return renderer;
+export const createScene = () => {
+  return new THREE.Scene();
 };
 
+export const createRendererBasico = () => {
+  return new THREE.WebGLRenderer({ antialias: true });
+};
+
+export const createRendererDirecto = (domCanvas) => {
+  const renderer = new THREE.WebGLRenderer({ domCanvas });
+  renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  // renderer.setClearColor(0x111111);
+  return renderer;
+};
 //----------------------------------------------------------------//
 //                            ADDON
 //----------------------------------------------------------------//
@@ -36,23 +36,19 @@ export const createStats = (container, insertar = true) => {
   return stats;
 };
 
-// export const createControls = (camera, renderer) => {
-//   const controls = new OrbitControls(camera, renderer.domElement);
-//   return controls;
-// };
 export const createControls = (camera, renderer_Or_Dom) => {
   const domElement = renderer_Or_Dom.domElement || renderer_Or_Dom;
-  if (!domElement) throw new Error("Elemento DOM o renderizador inválido");
+  if (!domElement) throw new Error("DOM inválido");
   return new OrbitControls(camera, domElement);
 };
 
 const createControlFirstPerson = (
-  camera,
+  cam,
   Dom,
   { evento = false, escena = null } = {},
 ) => {
   const element = Dom.domElement || Dom;
-  const controls = new PointerLockControls(camera, element);
+  const controls = new PointerLockControls(cam, element);
 
   if (evento) {
     element.addEventListener("click", () => {
@@ -71,7 +67,8 @@ const createControlFirstPerson = (
 export const create = {
   // Core
   scene: createScene,
-  renderer: createRenderer,
+  renderer: createRendererBasico,
+  renderDirecto: createRendererDirecto,
   contenedor: createContenedor,
   // Addons
   stats: createStats,
@@ -93,10 +90,10 @@ export const config_Estilos = () => {
 };
 
 // Configuracion Basica -- Para Renderer
-export const config_Renderer = (renderer, container) => {
+export const config_RendererBasico = (renderer, container) => {
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2));
   renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
-  renderer.setClearColor(0x111111);
+  renderer.setClearColor(0x111111); //bg
   container.appendChild(renderer.domElement);
 };
 
@@ -109,9 +106,6 @@ export const config_controls = (
   if (stopFloor) controls.maxPolarAngle = Math.PI / 2;
 };
 
-// export const config_ControlFirstPerson = () => {};
-
-// Configuracionn Basica -- Para Animacion
 export const config_Animation = (renderer, funcionAnimateName) => {
   renderer.setAnimationLoop(funcionAnimateName); // Inicia
   //renderer.setAnimationLoop(null);  // Detiene
@@ -119,9 +113,20 @@ export const config_Animation = (renderer, funcionAnimateName) => {
   // requestAnimationFrame(animate);
 };
 
+export const config = {
+  Estilos: config_Estilos,
+  Renderer: config_RendererBasico,
+  Animation: config_Animation,
+  Controls: config_controls,
+};
 //----------------------------------------------------------------//
 //                      EXTRA
 //----------------------------------------------------------------//
+
+export const extra_renderer = (renderer, { sombra = false } = {}) => {
+  renderer.shadowMap.enabled = sombra;
+};
+
 export const extra_controls = (
   controls,
   { min, max, objetivo, desplazarXY = false, rotate = false } = {},
@@ -135,26 +140,25 @@ export const extra_controls = (
   controls.update();
 };
 
-export const extra_renderer = (renderer, { sombra = false } = {}) => {
-  renderer.shadowMap.enabled = sombra;
+export const extra_camera = (
+  camera,
+  { posicion, objetivo, helperScene } = {},
+) => {
+  if (posicion) camera.position.set(...posicion);
+  if (objetivo) camera.lookAt(...objetivo);
+  if (helperScene) {
+    const helper = new THREE.CameraHelper(camera);
+    helperScene.add(helper);
+    return helper;
+  }
 };
-
-// export const extra_camera = (camera, { ayuda = false }) => {
-//   const cameraHelper = new THREE.CameraHelper(camera);
-// };
 
 //----------------------------------------------------------------//
 //                      UNIFICADOR
 //----------------------------------------------------------------//
 
-export const config = {
-  Estilos: config_Estilos,
-  Renderer: config_Renderer,
-  Animation: config_Animation,
-  Controls: config_controls,
-};
-
 export const extra = {
   Controls: extra_controls,
   Renderer: extra_renderer,
+  Camera: extra_camera,
 };
