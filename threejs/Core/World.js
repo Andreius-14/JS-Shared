@@ -46,11 +46,29 @@ export class WorldBuilder {
     return this.scene.fog;
   }
 
+  createFogRealista(color = this.color, density = 0.002) {
+    this.scene.fog = new THREE.FogExp2(color, density);
+    return this.scene.fog;
+  }
+
   setBackground(color = this.color) {
     //NeutroGrey: 0xcbcbcb - // MediumGrey:0xa0a0a0 //lightGrey: 0xe0e0e0,
     this.scene.background = new THREE.Color(color);
     return this.scene.background;
   }
+  // ┌──────────────────────┬──────────────────────┬────────────────────┐
+  // │      Escenario       │  scene.background    │   setClearColor    │
+  // ├──────────────────────┼──────────────────────┼────────────────────┤
+  // │ Fondo color sólido   │ ✅ Sí (overkill)     │ ✔️ Mejor opción    │
+  // ├──────────────────────┼──────────────────────┼────────────────────┤
+  // │ Fondo con textura    │ ✔️ Obligatorio       │ ❌ No soportado    │
+  // ├──────────────────────┼──────────────────────┼────────────────────┤
+  // │ Skybox/Cubemap       │ ✔️ Ideal             │ ❌ No soportado    │
+  // ├──────────────────────┼──────────────────────┼────────────────────┤
+  // │ Vídeo o animaciones  │ ✔️ Necesario         │ ❌ No soportado    │
+  // ├──────────────────────┼──────────────────────┼────────────────────┤
+  // │ Máximo rendimiento   │ ❌ Más pesado        │ ✔️ Ligero          │
+  // └──────────────────────┴──────────────────────┴────────────────────┘
 
   createFloor(color = this.color, size = 20, shadow = false) {
     // NeutroGrey: 0xcbcbcb
@@ -146,6 +164,10 @@ export class WorldBuilder {
   }
   get Bg() {
     return this.Background;
+  }
+
+  get rFog() {
+    return this.createFogRealista;
   }
 
   // ES
