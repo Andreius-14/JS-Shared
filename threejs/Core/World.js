@@ -70,17 +70,23 @@ export class WorldBuilder {
   // │ Máximo rendimiento   │ ❌ Más pesado        │ ✔️ Ligero          │
   // └──────────────────────┴──────────────────────┴────────────────────┘
 
-  createFloor(color = this.color, size = 20, shadow = false) {
-    // NeutroGrey: 0xcbcbcb
+  createFloor(
+    color = this.color,
+    size = 20,
+    shadow = false,
+    { texture = false } = {},
+  ) {
     const g = geo.Plano(size, size);
-    const m = mat.Reflectante();
+    g.rotateX(-Math.PI / 2);
+    const m = texture ? mat.Imagen() : mat.Reflectante();
     const mesh = Mesh.simple(g, m, color);
 
-    mesh.rotation.x = -Math.PI / 2;
     mesh.receiveShadow = shadow;
+    // mesh.rotation.x = -Math.PI / 2;
     this.scene.add(mesh);
     return mesh;
   }
+
   //------------------
   //   ILUMINACION
   //------------------
