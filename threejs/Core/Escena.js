@@ -39,7 +39,11 @@ export const createStats = (container, insertar = true) => {
 export const createControls = (camera, renderer_Or_Dom) => {
   const domElement = renderer_Or_Dom.domElement || renderer_Or_Dom;
   if (!domElement) throw new Error("DOM inválido");
-  return new OrbitControls(camera, domElement);
+  const control = new OrbitControls(camera, domElement);
+  control.minDistance = camera.near * 1.1;
+  control.maxDistance = camera.far * 0.9;
+
+  return control;
 };
 
 const createControlFirstPerson = (
@@ -89,33 +93,42 @@ export const config_Estilos = () => {
   document.body.style.overflow = "hidden"; // Evita scrollbars
 };
 
-// Configuracion Basica -- Para Renderer
-export const config_RendererBasico = (renderer, container) => {
+//---------------------
+//  RENDERER
+//---------------------
+// Configuracion Basica -- [Siempre se Ejecuta]
+const config_RendererBasico = (renderer, container) => {
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2));
   renderer.setSize(globalThis.innerWidth, globalThis.innerHeight);
-  renderer.setClearColor(0x111111); //bg
   container.appendChild(renderer.domElement);
 };
 
-export const config_controls = (
+// Configuracion Avanzada -- [Ejecucion Opcional]
+const config_RendererRealista = (renderer) => {
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.5;
+};
+
+//---------------------
+//  RENDERER
+//---------------------
+const config_controls = (
   controls,
   { zoom = true, soft = true, stopFloor = true } = {},
 ) => {
   controls.enableZoom = zoom;
   controls.enableDamping = soft; // Suavizar Movimiento
-  if (stopFloor) controls.maxPolarAngle = Math.PI / 2;
+  if (stopFloor) controls.maxPolarAngle = Math.PI / 2 - 0.05;
 };
 
-export const config_Animation = (renderer, funcionAnimateName) => {
+const config_Animation = (renderer, funcionAnimateName) => {
   renderer.setAnimationLoop(funcionAnimateName); // Inicia
-  //renderer.setAnimationLoop(null);  // Detiene
-  // Obsoleto usar settAnimationLoop fuera de esta function
-  // requestAnimationFrame(animate);
 };
 
 export const config = {
   Estilos: config_Estilos,
   Renderer: config_RendererBasico,
+  rRenderer: config_RendererRealista,
   Animation: config_Animation,
   Controls: config_controls,
 };
@@ -123,8 +136,9 @@ export const config = {
 //                      EXTRA
 //----------------------------------------------------------------//
 
-export const extra_renderer = (renderer, { sombra = false } = {}) => {
+export const extra_renderer = (renderer, { sombra = false, color } = {}) => {
   renderer.shadowMap.enabled = sombra;
+  if (color) renderer.setClearColor(color); //bg
 };
 
 export const extra_controls = (
@@ -134,9 +148,9 @@ export const extra_controls = (
   controls.enablePan = desplazarXY;
   controls.autoRotate = rotate;
 
-  if (min) controls.minDistance = min;
-  if (max) controls.maxDistance = max;
-  if (objetivo) controls.target.set(...objetivo);
+  if (min !== undefined) controls.minDistance = min;
+  if (max !== undefined) controls.maxDistance = max;
+  if (objetivo && Array.isArray(objetivo)) controls.target.set(...objetivo);
   controls.update();
 };
 
