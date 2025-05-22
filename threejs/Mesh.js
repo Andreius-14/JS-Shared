@@ -38,10 +38,10 @@ export const materialesBasicos = {
 };
 
 export function createGeometriaSimple(geometria, material, color) {
-  const objM = material;
-  objM.color = new THREE.Color(color);
-  const obj3D = new THREE.Mesh(geometria, objM);
-  return obj3D;
+  const [g, m] = [geometria, material];
+  m.color = new THREE.Color(color);
+
+  return new THREE.Mesh(g, m);
 }
 export function createGeometria(
   escena,
