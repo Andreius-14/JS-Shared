@@ -55,25 +55,36 @@ export class LightBuilder {
 
   addShadowToDirectional(
     light,
-    { quality = 512, range = 2, near = 0.5, far = 30, helper = false } = {},
+    {
+      quality = 512,
+      range = 2,
+      near = 0.5,
+      far = 30,
+      radius = 2,
+      bias = -0.005,
+      helper = false,
+    } = {},
   ) {
     // Habilita
     light.castShadow = true;
-    light.shadow.mapSize.width = quality;
-    light.shadow.mapSize.height = quality;
+    light.shadow.mapSize.set(quality, quality);
 
-    light.shadow.camera.top = range;
-    light.shadow.camera.bottom = -range;
-    light.shadow.camera.left = -range;
-    light.shadow.camera.right = range;
+    let help;
+    const cam = light.shadow.camera;
+    cam.top = range;
+    cam.left = -range;
+    cam.right = range;
+    cam.bottom = -range;
+    cam.near = near;
+    cam.far = far;
 
-    light.shadow.camera.near = near;
-    light.shadow.camera.far = far;
-    light.shadow.bias = -0.001;
+    light.shadow.bias = bias;
+    light.shadow.radius = radius;
 
-    const help = helper ? new THREE.CameraHelper(light.shadow.camera) : null;
-
-    if (help) this.scene?.add(help);
+    if (helper) {
+      help = new THREE.CameraHelper(cam);
+      this.scene?.add(help);
+    }
 
     return help;
   }
@@ -180,6 +191,9 @@ export class LightBuilder {
 
   // Sombras
   get shadowDirecional() {
+    return this.addShadowToDirectional;
+  }
+  get shadowD() {
     return this.addShadowToDirectional;
   }
 }
