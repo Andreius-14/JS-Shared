@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { toArray } from "./_shared.js";
 
 // 🎛️ Tipos de loop disponibles para animaciones
 export const LOOP_TYPES = {
@@ -44,17 +45,12 @@ export function groupActionsByName(mixer, animations) {
 // 🕹️ Configura las animaciones disponibles a partir de los clips
 export function configAnimations(
   target,
-  tipoDeLoop = LOOP_TYPES.bucle,
+  tipoLoop = LOOP_TYPES.bucle,
   pausarAlFinalizar = false,
 ) {
-  const actions = Array.isArray(target)
-    ? target
-    : target instanceof THREE.AnimationAction
-      ? [target]
-      : Object.values(target);
-
-  actions.forEach((action) => {
-    action.loop = tipoDeLoop;
+  toArray(target).forEach((action) => {
+    //Configura
+    action.loop = tipoLoop;
     action.clampWhenFinished = pausarAlFinalizar;
   });
 }
@@ -89,6 +85,7 @@ function deactivateAllActions(actions) {
   });
 }
 
+//Suavisado entre Animaciones
 function fadeToAction(name, duration) {
   previousAction = activeAction;
   activeAction = actions[name];
