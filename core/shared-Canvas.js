@@ -1,4 +1,4 @@
-import { makeHtml, _insertar, enlaceId, _idDisponible } from "./__Dom.js";
+import { makeHtml, _insertar  } from "./shared-Dom.js";
 
 //━━━━━━━━━━━━━━━━━━━━━
 //       Make
@@ -21,22 +21,22 @@ export function makeCanvas({ width = 500, height = 1000, htmlID = "canvas" }) {
 //━━━━━━━━━━━━━━━━━━━━━
 //     Insert
 //━━━━━━━━━━━━━━━━━━━━━
-export function insert_Container(boxID = "", parentID = "") {
-  const boxDad = enlaceId(parentID) || document.body;
-  const boxChild = enlaceId(boxID) || makeContainer(boxID);
-
-  _insertar(boxDad, boxChild);
-
-  return boxChild;
-}
-export function insert_Canvas(boxID = "", parentID = "") {
-  const boxDad = enlaceId(parentID) || document.body;
-  const boxChild = enlaceId(boxID) || makeCanvas({ htmlID: boxID });
-
-  _insertar(boxDad, boxChild);
-
-  return boxChild;
-}
+// export function insert_Container(boxID = "", parentID = "") {
+//   const boxDad = enlaceId(parentID) || document.body;
+//   const boxChild = enlaceId(boxID) || makeContainer(boxID);
+//
+//   _insertar(boxDad, boxChild);
+//
+//   return boxChild;
+// }
+// export function insert_Canvas(boxID = "", parentID = "") {
+//   const boxDad = enlaceId(parentID) || document.body;
+//   const boxChild = enlaceId(boxID) || makeCanvas({ htmlID: boxID });
+//
+//   _insertar(boxDad, boxChild);
+//
+//   return boxChild;
+// }
 
 //----------------------------------------------------------------//
 //                         NIVEL: MEDIO

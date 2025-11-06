@@ -1,3 +1,4 @@
+import { _isHTML, _idDisponible } from "./__Bool.js";
 //----------------------------------------------------------------//
 //                         NIVEL: FACIL
 //----------------------------------------------------------------//
@@ -29,29 +30,27 @@ export function _insertar(padre, hijo) {
 }
 
 //----------------------------------------------------------------//
-//                         NIVEL: Bool
-//----------------------------------------------------------------//
-export function _idDisponible(id) {
-  const el = enlaceId(id);
-  if (el) {
-    console.warn(`ID "${id}" ya está en uso`, el);
-    return false;
-  }
-  return true;
-}
-
-//----------------------------------------------------------------//
 //                         NIVEL: MEDIO
 //----------------------------------------------------------------//
+export function _insertarBy({ child, parentID, parentClass, parentNode } = {}) {
+  const select =
+    enlaceId(parentID) || parentNode || enlaceClass(parentClass)?.[0];
+  const parent = _isHTML(select) ? select : document.body;
 
-export function makeHtml(tag = "", { id = "", classes = [], txt = "" } = {}) {
+  _insertar(parent, child);
+  return child;
+}
+
+export function makeHtml(nodo = "", { id = "", classes = [], txt = "" } = {}) {
   //Bool
   if (id && !_idDisponible(id)) return null;
   //Make
-  const element = document.createElement(tag);
+  const element = document.createElement(nodo);
   //Propiedades Opcionales
   if (id) element.id = id;
   if (txt) element.textContent = txt;
   if (classes.length > 0) element.classList.add(...classes);
   return element;
 }
+
+//Inserta Elemento - Buscando al Padre a partir del Id Class o Node
