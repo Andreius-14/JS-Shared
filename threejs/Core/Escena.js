@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { loadContenedor } from "../../Shared-DOM.js";
+import { loadContenedor } from "../../core/shared-Dom.js";
 import { camara } from "./Camara.js";
 // Addons
 import Stats from "three/addons/libs/stats.module.js"; // Consumo

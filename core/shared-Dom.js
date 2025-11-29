@@ -53,4 +53,11 @@ export function makeHtml(nodo = "", { id = "", classes = [], txt = "" } = {}) {
   return element;
 }
 
+export function loadContenedor (id="container",idDad,{insert=true}) {
+    let dad = enlaceId(idDad) || document.body;
+    let child = enlaceId(id) || makeHtml("div",{id:id})
+
+    if(insert) _insertar(dad,child)
+    return child
+}
 //Inserta Elemento - Buscando al Padre a partir del Id Class o Node
