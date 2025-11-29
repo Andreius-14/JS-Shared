@@ -6,3 +6,8 @@ export function _idDisponible(id) {
   console.warn(`ID "${id}" ya está en uso`, el);
   return false;
 }
+
+
+export function esString(valor) {
+  return typeof valor === "string" || valor instanceof String;
+}
