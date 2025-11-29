@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { colorCss, colorHex } from "../../core/shared-Dom.js";
+import { colorCss, colorHex } from "../../core/__Const.js";
 import { Mesh, geo, mat } from "../Mesh.js";
 
 //+------------------+----------------------------+------------------------------+
