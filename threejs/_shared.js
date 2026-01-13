@@ -1,21 +1,23 @@
+/* eslint indent: "off" */
+/* eslint-disable space-before-function-paren */
 import * as THREE from "three";
-export {toArray,toRadians} from '../core/__Accion.js'
-export {esString}from './../core/__Bool.js'
+export { toArray, toRadians } from '../core/__Accion.js'
+export { esString } from './../core/__Bool.js'
 // shared.js
 export function enableShadows(model, { proyecta = true, recibe = false } = {}) {
-  if (model.traverse) {
-    model.traverse((obj) => {
-      if (obj.isMesh) {
-        obj.castShadow = proyecta;
-        obj.receiveShadow = recibe;
-      }
-    });
-  }
+    if (model.traverse) {
+        model.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.castShadow = proyecta;
+                obj.receiveShadow = recibe;
+            }
+        });
+    }
 
-  if (model.isMesh) {
-    model.castShadow = proyecta;
-    model.receiveShadow = recibe;
-  }
+    if (model.isMesh) {
+        model.castShadow = proyecta;
+        model.receiveShadow = recibe;
+    }
 }
 
 //--------------------------------------

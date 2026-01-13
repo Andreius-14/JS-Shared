@@ -1,22 +1,24 @@
+/* eslint indent: "off" */
+/* eslint-disable space-before-function-paren */
 import * as THREE from "three";
 import { toArray } from "./_shared.js";
 
 // 🎛️ Tipos de loop disponibles para animaciones
 export const LOOP_TYPES = {
-  bucle: THREE.LoopRepeat, // Animación infinita
-  one: THREE.LoopOnce, // Solo una vez
-  pingpong: THREE.LoopPingPong, // Ida y vuelta
+    bucle: THREE.LoopRepeat, // Animación infinita
+    one: THREE.LoopOnce, // Solo una vez
+    pingpong: THREE.LoopPingPong, // Ida y vuelta
 };
 //----------------------------------------------------------------//
 //                     FUNCIONES BASICO
 //----------------------------------------------------------------//
 
 export function createMixer(modelo3D) {
-  return new THREE.AnimationMixer(modelo3D);
+    return new THREE.AnimationMixer(modelo3D);
 }
 
 export function createClock() {
-  return new THREE.Clock();
+    return new THREE.Clock();
 }
 
 //----------------------------------------------------------------//
@@ -24,20 +26,20 @@ export function createClock() {
 //----------------------------------------------------------------//
 
 export function groupActionsByName(mixer, animations) {
-  // Animaciones -> clips  --> Entonces de Un clip -> action
-  // variable
-  const actions = {};
-  let name;
+    // Animaciones -> clips  --> Entonces de Un clip -> action
+    // variable
+    const actions = {};
+    let name;
 
-  for (const clip of animations) {
-    if (clip.name) {
-      //Normalizar
-      name = clip.name.trim(); //Opcional .toLowerCase()
-      //Asignar
-      actions[name] = mixer.clipAction(clip);
+    for (const clip of animations) {
+        if (clip.name) {
+            //Normalizar
+            name = clip.name.trim(); //Opcional .toLowerCase()
+            //Asignar
+            actions[name] = mixer.clipAction(clip);
+        }
     }
-  }
-  return actions;
+    return actions;
 }
 // animationGroup = {
 //       "animacion1" : mixer.clipAction(clip),
@@ -118,42 +120,42 @@ export function groupActionsByName(mixer, animations) {
 // if (mixer) mixer.update(delta);
 
 function configAnimations(
-  target,
-  loop = LOOP_TYPES.bucle,
-  pausarAlFinalizar = false,
+    target,
+    loop = LOOP_TYPES.bucle,
+    pausarAlFinalizar = false,
 ) {
-  toArray(target).forEach((action) => {
-    action.loop = loop;
-    action.clampWhenFinished = pausarAlFinalizar;
-  });
+    toArray(target).forEach((action) => {
+        action.loop = loop;
+        action.clampWhenFinished = pausarAlFinalizar;
+    });
 }
 
 function pauseAll(actions) {
-  toArray(actions).forEach((action) => (action.paused = true));
+    toArray(actions).forEach((action) => (action.paused = true));
 }
 
 function unPauseAll(actions) {
-  toArray(actions).forEach((action) => (action.paused = false));
+    toArray(actions).forEach((action) => (action.paused = false));
 }
 
 function playAll(actions) {
-  toArray(actions).forEach((action) => action.play());
+    toArray(actions).forEach((action) => action.play());
 }
 
 function stopAll(actions) {
-  toArray(actions).forEach((action) => action.stop());
+    toArray(actions).forEach((action) => action.stop());
 }
 
 const Config = {
-  configAnimations,
-  //
-  stopAll,
-  playAll,
-  //
-  pauseAll,
-  unPauseAll,
-  //
-  basico: configAnimations,
+    configAnimations,
+    //
+    stopAll,
+    playAll,
+    //
+    pauseAll,
+    unPauseAll,
+    //
+    basico: configAnimations,
 };
 
 //Suavisado entre Animaciones
@@ -174,70 +176,70 @@ const Config = {
 // }
 
 function SoftChange(actions = {}, nameNew, objCurrent = {}, fade = 0.5) {
-  if (objCurrent.current === nameNew) return false;
+    if (objCurrent.current === nameNew) return false;
 
-  // console.log(objCurrent.current, " ===> ", nameNew);
+    // console.log(objCurrent.current, " ===> ", nameNew);
 
-  const current = actions[nameNew];
-  const old = actions[objCurrent.current];
-  // Actualizar estado
-  objCurrent.current = nameNew;
+    const current = actions[nameNew];
+    const old = actions[objCurrent.current];
+    // Actualizar estado
+    objCurrent.current = nameNew;
 
-  //New
-  current.reset();
-  current.weight = 1.0;
-  current.stopFading();
+    //New
+    current.reset();
+    current.weight = 1.0;
+    current.stopFading();
 
-  //Old
-  old.stopFading();
+    //Old
+    old.stopFading();
 
-  if (nameNew !== "Idle")
-    current.time =
-      old.time * (current.getClip().duration / old.getClip().duration);
-  //
-  old._scheduleFading(fade, old.getEffectiveWeight(), 0);
-  current._scheduleFading(fade, current.getEffectiveWeight(), 1);
+    if (nameNew !== "Idle")
+        current.time =
+            old.time * (current.getClip().duration / old.getClip().duration);
+    //
+    old._scheduleFading(fade, old.getEffectiveWeight(), 0);
+    current._scheduleFading(fade, current.getEffectiveWeight(), 1);
 
-  //Ejecutando Animacion
-  current.play();
+    //Ejecutando Animacion
+    current.play();
 }
 
 function SoftDura(actions = {}, nameNew, objCurrent = {}, fade = 0.5) {
-  if (objCurrent.current === nameNew) return false;
+    if (objCurrent.current === nameNew) return false;
 
-  // console.log(objCurrent.current, " ===> ", nameNew);
+    // console.log(objCurrent.current, " ===> ", nameNew);
 
-  const current = actions[nameNew];
-  const old = actions[objCurrent.current];
-  objCurrent.current = nameNew;
+    const current = actions[nameNew];
+    const old = actions[objCurrent.current];
+    objCurrent.current = nameNew;
 
-  setWeight(current, 1.0);
-  old.fadeOut(fade);
-  current.reset().fadeIn(fade).play();
+    setWeight(current, 1.0);
+    old.fadeOut(fade);
+    current.reset().fadeIn(fade).play();
 }
 function setWeight(action, weight) {
-  action.enabled = true;
-  action.setEffectiveTimeScale(1);
-  action.setEffectiveWeight(weight);
+    action.enabled = true;
+    action.setEffectiveTimeScale(1);
+    action.setEffectiveWeight(weight);
 }
 //----------------------------------------------------------------//
 //              OBJETO UNIFICADOR DE ANIMACIONES
 //----------------------------------------------------------------//
 export const Anime = {
-  // Objetos
-  loop: LOOP_TYPES,
-  config: Config,
+    // Objetos
+    loop: LOOP_TYPES,
+    config: Config,
 
-  // Directo
-  createMixer,
-  createClock,
-  SoftChange,
-  SoftDura,
+    // Directo
+    createMixer,
+    createClock,
+    SoftChange,
+    SoftDura,
 
-  groupActionsByName,
-  configAnimations,
-  // Minimalista
-  Mixer: createMixer,
-  Clock: createClock,
-  groupAnimation: groupActionsByName,
+    groupActionsByName,
+    configAnimations,
+    // Minimalista
+    Mixer: createMixer,
+    Clock: createClock,
+    groupAnimation: groupActionsByName,
 };
