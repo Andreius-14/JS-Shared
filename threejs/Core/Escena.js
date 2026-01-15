@@ -14,9 +14,9 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 export const createContenedor = loadContenedor
 export const createCamara = camara.Perspective
 
-// ----------------------------------------------------------------//
-//                            Core
-// ----------------------------------------------------------------//
+//   ╭─────────────────────────────────────────────────────────╮
+//   │                          Core                           │
+//   ╰─────────────────────────────────────────────────────────╯
 export const createScene = () => {
     return new THREE.Scene()
 }
@@ -25,16 +25,21 @@ export const createRendererBasico = () => {
     return new THREE.WebGLRenderer({ antialias: true })
 }
 
-export const createRendererDirecto = (domCanvas) => {
-    const renderer = new THREE.WebGLRenderer({ domCanvas })
-    renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2))
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    // renderer.setClearColor(0x111111);
+export const createRendererDirecto = (domCanvas, { configBasic = true, configRelista = false, container = null } = {}) => {
+    const renderer = new THREE.WebGLRenderer({
+        canvas: domCanvas,
+        antialias: true
+    })
+
+    // Config
+    if (configBasic) config_RendererBasico(renderer, container)
+    if (configRelista) config_RendererRealista(renderer)
+
     return renderer
 }
-// ----------------------------------------------------------------//
-//                            ADDON
-// ----------------------------------------------------------------//
+//   ╭─────────────────────────────────────────────────────────╮
+//   │                          ADDON                          │
+//   ╰─────────────────────────────────────────────────────────╯
 export const createStats = (container, insertar = true) => {
     const stats = new Stats()
     if (insertar) container.appendChild(stats.dom)
@@ -52,15 +57,16 @@ export const createControls = (camera, renderer_Or_Dom) => {
 }
 
 const createControlFirstPerson = (
-    cam,
+    camera,
     renderer,
     { activarClick = true, escena = null } = {} // Renombrado para claridad
 ) => {
     const element = renderer.domElement || renderer
-    if (!element) throw new Error("createControlFirstPerson: Se requiere un canvas válido.");
+    if (!element) throw new Error('Se requiere un canvas válido.')
 
-    const controls = new PointerLockControls(cam, element);
+    const controls = new PointerLockControls(camera, element)
 
+    controls.pointerSpeed = 0.7
     // Si activamos el bloqueo por click
     if (activarClick) {
         element.addEventListener('click', () => {
@@ -71,19 +77,8 @@ const createControlFirstPerson = (
     if (escena) escena.add(controls.getObject())
 
     return controls
-};
-
-const createControlMirada = (cam, renderer) => {
-    const controls = new PointerLockControls(cam, renderer.domElement)
-    //Sensible
-    controls.pointerSpeed = 0.7;
-    // Solo activamos el bloqueo al click
-    renderer.domElement.addEventListener('click', () => {
-        controls.lock()
-    })
-
-    return controls // No necesitas función de update porque no hay WASD
 }
+
 // ----------------------------------------------------------------//
 //                            Camara
 // ----------------------------------------------------------------//
@@ -100,7 +95,6 @@ export const create = {
     controlFP: createControlFirstPerson,
     // Camara
     camera: createCamara,
-    cameraFP: createControlMirada,
     loadCamara: camara
 }
 
@@ -108,10 +102,16 @@ export const create = {
 //                      Configuracion
 // ----------------------------------------------------------------//
 // Configuracion Basica -- Para Estilos CSS
-export const config_Estilos = () => {
+export const config_Estilos = (container = null) => {
     document.body.style.margin = '0'
     document.body.style.padding = '0'
     document.body.style.overflow = 'hidden' // Evita scrollbars
+
+    if (container) {
+        container.style.width = '100vw'
+        container.style.height = '100vh'
+        container.style.display = 'block'
+    }
 }
 
 // ---------------------
@@ -121,13 +121,16 @@ export const config_Estilos = () => {
 const config_RendererBasico = (renderer, container) => {
     renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio, 2))
     renderer.setSize(globalThis.innerWidth, globalThis.innerHeight)
-    container.appendChild(renderer.domElement)
+    if (container) {
+        container.appendChild(renderer.domElement)
+    }
 }
 
 // Configuracion Avanzada -- [Ejecucion Opcional]
 const config_RendererRealista = (renderer) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 0.5
+    // renderer.outputColorSpace = THREE.SRGBColorSpace;
 }
 
 // ---------------------
@@ -159,7 +162,7 @@ export const config = {
 
 export const extra_renderer = (renderer, { sombra = false, color } = {}) => {
     renderer.shadowMap.enabled = sombra
-    if (color) renderer.setClearColor(color) // bg
+    if (color) renderer.setClearColor(color) // bg - Se recomienda el bg de World
 }
 
 export const extra_controls = (
