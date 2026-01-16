@@ -1,0 +1,79 @@
+
+usar dispose() en:
+    geometry()
+    material()
+    texture()
+
+
+
+mesh.geometry.dispose()
+if (Array.isArray(mesh.material)) {
+  mesh.material.forEach(m => m.dispose())
+} else {
+  mesh.material.dispose()
+}
+scene.remove(mesh)
+
+
+geometry.dispose()
+material.dispose()
+texture.dispose()
+
+
+           ╭───────────────────────────────────────────────────────────╮
+           │                     para el renderer                      │
+           ╰───────────────────────────────────────────────────────────╯
+renderer.dispose()
+renderer.forceContextLoss()
+renderer.domElement = null
+
+           ╭───────────────────────────────────────────────────────────╮
+           │                       para listener                       │
+           ╰───────────────────────────────────────────────────────────╯
+window.addEventListener('resize', onResize)
+
+window.removeEventListener('resize', onResize)
+
+           ╭───────────────────────────────────────────────────────────╮
+           │                para el requestanimateframe                │
+           ╰───────────────────────────────────────────────────────────╯
+
+let rafId
+
+esto es para juegos basicos 2d en threejs no es el caso 
+
+function animate() {
+  rafId = requestAnimationFrame(animate)
+  renderer.render(scene, camera)
+}
+
+cancelAnimationFrame(rafId)
+
+
+
+
+controls.dispose()
+stats.dom.remove()
+
+
+
+
+
+----renderer
+cancelar requestAnimationFrame
+
+remover listeners
+
+dispose() de:
+
+geometrías
+
+materiales
+
+texturas
+
+renderer
+
+controls
+
+limpiar scene.children
