@@ -28,8 +28,13 @@ export const EventoResize = (camara, renderer) => {
         renderer.setSize(w, h)
     }
 
-    globalThis.addEventListener('resize', debounce(actualizar))
+    const handler = debounce(actualizar)
+    globalThis.addEventListener('resize', handler)
     actualizar()
+
+    return () => {
+        globalThis.removeEventListener('resize', handler)
+    }
 }
 
 export const EventoFullScreen = (renderer) => {
@@ -43,7 +48,30 @@ export const EventoFullScreen = (renderer) => {
         }
     }
     renderer.domElement.addEventListener('dblclick', alternar)
+
+    return () => {
+        renderer.domElement.removeEventListener('dblclick', alternar)
+    }
 }
+
+
+export const EventoVisibilityStopAnimate = (renderer, funcionAnimateName) => {
+
+    // Funcion Evento - Detinen el Loop Animate. 
+    // Deteniendo Fisicas y renderer
+
+    const onChange = () => {
+        if (!renderer) return
+        renderer.setAnimationLoop(document.hidden ? null : funcionAnimateName)
+    }
+
+    document.addEventListener('visibilitychange', onChange)
+
+    return () => {
+        document.removeEventListener('visibilitychange', onChange)
+    }
+}
+
 
 export const EventoCleanScene = (renderer, scene) => {
     console.log('prueba1')
@@ -71,9 +99,9 @@ export const EventoCleanScene = (renderer, scene) => {
             if (renderer) {
                 console.log('renderer existe')
                 renderer.dispose()
-                renderer.forceContextLoss()
-                renderer.domElement = null
-                renderer = null // Eliminar referencia
+                // renderer.forceContextLoss()  //para produccion
+                // renderer.domElement = null
+                // renderer = null // Eliminar referencia
             }
 
             // 3. Caché global
@@ -93,6 +121,9 @@ export const EventoCleanScene = (renderer, scene) => {
         globalThis.removeEventListener('beforeunload', clean) // Elimina el listener
     }
 }
+
+
+
 export const evento = {
     // NameOriginal
     // MultiResizes,
@@ -100,6 +131,8 @@ export const evento = {
     // Alias
     Resize: EventoResize,
     FullScreen: EventoFullScreen,
+    Visibility: EventoVisibilityStopAnimate,
+
     Clean: EventoCleanScene
 }
 
