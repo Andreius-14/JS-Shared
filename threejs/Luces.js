@@ -22,8 +22,10 @@ import * as THREE from "three";
 //                        Clase LightBuilder
 //----------------------------------------------------------------//
 export class LightBuilder {
-    constructor(scene) {
-        this.scene = scene;
+    constructor(scene,color = 0xffffff, ayuda = false) {
+        this.scene = scene
+        this.color = color
+        this.helper = ayuda
     }
 
     //----------------------------------------------------------------//
@@ -32,10 +34,10 @@ export class LightBuilder {
 
     createDirectional({
         position = [5, 5, 5],
-        color = 0xffffff,
-        intensity = 3,
         objetivo = [0, 0, 0],
-        ayuda = false,
+        intensity = 3,
+        color = this.color,
+        ayuda = this.helper,
         generaSombra = false,
     } = {}) {
         const light = new THREE.DirectionalLight(color, intensity);
@@ -64,7 +66,7 @@ export class LightBuilder {
             far = 30,
             radius = 2,
             bias = -0.005,
-            helper = false,
+            helper = this.helper,
         } = {},
     ) {
         // Habilita
@@ -93,10 +95,10 @@ export class LightBuilder {
 
     createPoint({
         position = [0, 5, 0],
-        color = 0xffffff,
+        color = this.color,
         intensity = 1,
         distance = 10,
-        helper = false,
+        helper = this.helper
     } = {}) {
         const light = new THREE.PointLight(color, intensity, distance);
         light.position.set(...position);
@@ -116,13 +118,13 @@ export class LightBuilder {
     createSpot({
         position = [0, 5, 0],
         objetivo = [0, 0, 0],
-        color = 0xffffff,
+        color = this.color,
         intensity = 1,
         distance = 10,
         angleGrados = 45,
         angleRadian = null,
         penumbraBorde = 0.1,
-        ayuda = false,
+        ayuda = this.helper,
         shadow = false,
     } = {}) {
         const anguloConvertido = (angleGrados * THREE.MathUtils.DEG2RAD) / 2;
@@ -167,7 +169,7 @@ export class LightBuilder {
     get Sol() {
         return ({
             position = [0, 20, 10], // Valores por defecto desestructurados
-            color = 0xffffff,
+            color = this.color,
             intensity = 3,
             objetivo = [0, 0, 0],
             ayuda = false,
