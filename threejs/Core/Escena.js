@@ -29,6 +29,7 @@ export const createRendererDirecto = (domCanvas, { configBasic = true, configRel
     const renderer = new THREE.WebGLRenderer({
         canvas: domCanvas,
         antialias: true
+        // alpha:true // Activa transparencia y color de fondo con setclearcolor()
     })
 
     // Config
@@ -127,10 +128,10 @@ const config_RendererBasico = (renderer, container) => {
 }
 
 // Configuracion Avanzada -- [Ejecucion Opcional]
-const config_RendererRealista = (renderer) => {
+const config_RendererRealista = (renderer,brillo =0.5) => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 0.5
-    // renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMappingExposure = brillo
+    renderer.outputColorSpace = THREE.SRGBColorSpace
 }
 
 // ---------------------
@@ -138,10 +139,13 @@ const config_RendererRealista = (renderer) => {
 // ---------------------
 const config_controls = (
     controls,
-    { zoom = true, soft = true, stopFloor = true } = {}
+    { zoom = true, soft = true, stopFloor = true , leftButton = true } = {}
 ) => {
     controls.enableZoom = zoom
     controls.enableDamping = soft // Suavizar Movimiento
+
+    controls.enablePan = leftButton
+    controls.screenSpacePanning = true  //solo para ser redundante
     if (stopFloor) controls.maxPolarAngle = Math.PI / 2 - 0.05
 }
 
