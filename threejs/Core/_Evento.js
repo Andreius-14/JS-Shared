@@ -19,12 +19,9 @@ export const debounce = (fn, delay = 100) => {
 
 export const EventoResize = (camara, renderer) => {
     const actualizar = () => {
-        // variables
         const [w, h] = [globalThis.innerWidth, globalThis.innerHeight]
-        // configuracion
         camara.aspect = w / h
         camara.updateProjectionMatrix()
-        // Final
         renderer.setSize(w, h)
     }
 
@@ -56,10 +53,8 @@ export const EventoFullScreen = (renderer) => {
 
 
 export const EventoVisibilityStopAnimate = (renderer, funcionAnimateName) => {
-
     // Funcion Evento - Detinen el Loop Animate. 
     // Deteniendo Fisicas y renderer
-
     const onChange = () => {
         if (!renderer) return
         renderer.setAnimationLoop(document.hidden ? null : funcionAnimateName)
@@ -73,57 +68,32 @@ export const EventoVisibilityStopAnimate = (renderer, funcionAnimateName) => {
 }
 
 
-export const EventoCleanScene = (renderer, scene) => {
-    console.log('prueba1')
-    const clean = () => {
-        // Detener loop de animación
-        renderer.setAnimationLoop(null)
+// export const EventoCleanScene = (renderer, scene) => {
+//     // Eliminar listener previo (si existe)
+//     // globalThis.removeEventListener("beforeunload", clean);
+//     globalThis.addEventListener('beforeunload', cleanOld(scene, renderer))
+//
+//     // 5. Devolver función para limpieza manual + desregistro
+//     return () => {
+//         cleanOld() // Ejecuta la limpieza
+//         globalThis.removeEventListener('beforeunload', cleanOld) // Elimina el listener
+//     }
+// }
 
-        try {
-            console.log('Funcion beforeunload')
-            // 1. escena y recursos
-            scene.traverse((obj) => {
-                if (obj.isMesh || obj.isLine || obj.isPoints) {
-                    obj.geometry?.dispose() // Liberar geometría (con opcional chaining)
-                    if (obj.material) {
-                        Array.isArray(obj.material)
-                            ? obj.material.forEach((m) => m.dispose())
-                            : obj.material.dispose()
-                    }
-                }
-                if (obj.isLight || obj.isSprite) obj.dispose() // Luces y sprites
-                if (obj.texture) obj.texture.dispose() // Texturas
-            })
-
-            // 2. renderer
-            if (renderer) {
-                console.log('renderer existe')
-                renderer.dispose()
-                // renderer.forceContextLoss()  //para produccion
-                // renderer.domElement = null
-                // renderer = null // Eliminar referencia
-            }
-
-            // 3. Caché global
-            if (THREE.Cache) THREE.Cache.clear()
-        } catch (e) {
-            console.warn('Error al limpiar Three.js:', e)
-        }
-    }
-
-    // Eliminar listener previo (si existe)
-    // globalThis.removeEventListener("beforeunload", clean);
-    globalThis.addEventListener('beforeunload', clean)
-
-    // 5. Devolver función para limpieza manual + desregistro
-    return () => {
-        clean() // Ejecuta la limpieza
-        globalThis.removeEventListener('beforeunload', clean) // Elimina el listener
-    }
-}
-
-
-
+// export const EventoCleanAll = (scene, render, stats, controls) => {
+//
+//     const cleanUp = () => {
+//         clean.scene(scene)
+//         clean.render(render)
+//         clean.addon(stats, controls)
+//     }
+//     globalThis.addEventListener('beforeunload', cleanUp)
+//
+//     return () => {
+//         globalThis.removeEventListener('beforeunload', cleanUp) // Elimina el listener
+//     }
+//
+// }
 export const evento = {
     // NameOriginal
     // MultiResizes,
@@ -131,9 +101,10 @@ export const evento = {
     // Alias
     Resize: EventoResize,
     FullScreen: EventoFullScreen,
-    Visibility: EventoVisibilityStopAnimate,
+    Visibility: EventoVisibilityStopAnimate
 
-    Clean: EventoCleanScene
+    // Clean: EventoCleanAll
+
 }
 
 // Bloquea el Mouse dentro del Cambas
