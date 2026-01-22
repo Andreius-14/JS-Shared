@@ -1,0 +1,6 @@
+
+           ╭───────────────────────────────────────────────────────────╮
+           │                         Geometria                         │
+           ╰───────────────────────────────────────────────────────────╯
+           Usar la misma geometria para varios mesh
+           Editamos sus propiedades tocando solo el MEsh propiedades scala
