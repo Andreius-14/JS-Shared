@@ -1,8 +1,9 @@
 /* eslint indent: "off" */
 /* eslint-disable space-before-function-paren */
 import * as THREE from 'three'
-
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js'
+import { FontLoader } from 'three/addons/loaders/FontLoader.js'
 import { toArray, esString, toRadians } from './_shared.js'
 
 //   ╭─────────────────────────────────────────────────────────╮
@@ -15,10 +16,9 @@ import { toArray, esString, toRadians } from './_shared.js'
 // ── Instancias únicas (la parte que SÍ importa mucho) ───────────────────────
 const _texLoader = new THREE.TextureLoader()
 const _hdrLoader = new RGBELoader().setDataType(THREE.FloatType)
-const _gltfLoader = new THREE.GLTFLoader()
-const _fontLoader = new THREE.FontLoader()
+const _gltfLoader = new GLTFLoader()
+const _fontLoader = new FontLoader()
 const _cubeLoader = new THREE.CubeTextureLoader()
-
 
 const Loaders = {
     textura: () => _texLoader,
@@ -61,7 +61,7 @@ function cargarTextura(ruta, colorSpace = Space.Color) {
 
         // Anisotropy por defecto (muy buena mejora visual)
         const maxAnisotropy = _texLoader.manager?.renderer?.capabilities?.getMaxAnisotropy?.() ?? 8
-        textura.anisotropy = Math.min(16, maxAnisotropy)    // 8–16 es el punto dulce actual
+        textura.anisotropy = Math.min(16, maxAnisotropy) // 8–16 es el punto dulce actual
         textureCache.set(cacheKey, textura)
 
         return textura
@@ -73,8 +73,8 @@ function cargarTextura(ruta, colorSpace = Space.Color) {
 
 function clearTextureCache() {
     textureCache.forEach((textura) => {
-        if (textura) textura.dispose();
-    });
+        if (textura) textura.dispose()
+    })
     textureCache.clear()
 }
 
